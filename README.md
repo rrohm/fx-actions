@@ -1,7 +1,7 @@
 fx-actions
 ==========
 
-A small but versatile framework for speeding up development of JavaFX/FXML applications - use 
+A small but versatile framework for speeding up development of JavaFX/FXML applications,  use 
 declarative syntax for binding actions to the UI controls, for a clean separation of logic 
 and presentation and more fun with JavaFX.
 
