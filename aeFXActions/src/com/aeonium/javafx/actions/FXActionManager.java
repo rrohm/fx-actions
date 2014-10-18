@@ -1,0 +1,440 @@
+/*
+ * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
+package com.aeonium.javafx.actions;
+
+import com.aeonium.javafx.behaviour.FXAbstractBehaviour;
+import com.aeonium.javafx.behaviour.DefaultFXBehaviourHandler;
+import com.aeonium.javafx.actions.util.InstanceMap;
+import com.aeonium.javafx.actions.annotations.AnnotationHandler;
+import com.aeonium.javafx.actions.annotations.FXAManager;
+import com.aeonium.javafx.actions.annotations.FXAction;
+import com.aeonium.javafx.behaviour.annotations.FXBehaviour;
+import com.aeonium.javafx.actions.annotations.FXKeyEventAction;
+import com.aeonium.javafx.actions.annotations.FXKeyEventActions;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.Worker;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.util.Callback;
+
+/**
+ * <p>The FXActionManager is a controller factory as well as an annotation
+ * processor. It is used to create the controller for a JavaFX FXML document,
+ * and subsequently search the controller instance for runtime annotations that
+ * describe the mapping of actions to ui elements. Use in in a way like: </p>
+ *
+ * <pre>
+ *
+ * {@literal public void start(Stage stage) throws Exception {
+    FXActionManager myActionControllerFactory = new FXActionManager();
+
+    // Shortcut, if you have a fxml without stylesheets
+    //Parent root = FXMLLoader.load(
+    //        getClass().getResource("FXMLDocument.fxml"),
+    //        null,
+    //        null, myActionControllerFactory);
+
+    // use this approach if the fxml uses stylesheets:
+    FXMLLoader fxmlLoader = new FXMLLoader();
+    fxmlLoader.setLocation(getClass().getResource("FXMLDocument.fxml"));
+    fxmlLoader.setControllerFactory(myActionControllerFactory);
+    Parent root = (Parent) fxmlLoader.load();
+
+    myActionControllerFactory.initActions();
+
+    // optional: get the action by its type and parametrize it:
+    MyAction action = myActionControllerFactory.getAction(MyAction.class);
+    action.setText("Erste Aktion");
+
+    Scene scene = new Scene(root);
+
+    stage.setScene(scene);
+    stage.show();
+  }
+ }
+ * </pre>
+ *
+ * <p>As the example shows, the <code>.getAction()</code>-Method is used as a
+ * universal factory method for the action instances. You may create actions
+ * yourself, but this is not the recommended way.
+ * </p>
+ * <p><strong>Please note: </strong>This approach implies that your actions should be thought of as "quasi-singletons",
+ * i.e., the FXActionManager only knows one instance of each action class. This
+ * is a design constraint that should be taken care of.
+ * </p>
+ *
+ * @author robert rohm
+ */
+public class FXActionManager implements Callback<Class<?>, Object> {
+
+  private static final Logger LOG = Logger.getLogger(FXActionManager.class.getName());
+
+  private final List<Object> myControllers = Collections.synchronizedList(new ArrayList<>());
+  private final List<Object> myProcessedControllers = Collections.synchronizedList(new ArrayList<>());
+
+  private final InstanceMap<? extends FXAbstractAction> instanceMap = new InstanceMap<>();
+
+  private final ObservableList<Task> currentTasks = FXCollections.observableArrayList();
+  private final ListProperty<Task> currentTaskProp = new SimpleListProperty(this.currentTasks);
+
+  private final BooleanProperty doActionsAsync = new SimpleBooleanProperty(true);
+
+  private final Map<Class, AnnotationHandler> handlerMap;
+
+  private final Lock myControllersLock = new ReentrantLock();
+
+
+  public FXActionManager() {
+    this.handlerMap = new HashMap<>();
+    this.handlerMap.put(FXAction.class, new DefaultFXActionHandler(this));
+    this.handlerMap.put(FXKeyEventAction.class, new DefaultFXKeyEventActionHandler(this));
+    this.handlerMap.put(FXKeyEventActions.class, new DefaultFXKeyEventsActionHandler(this));
+    this.handlerMap.put(FXBehaviour.class, new DefaultFXBehaviourHandler(this));
+
+    this.currentTasks.addListener(new ListChangeListener<Task>() {
+
+      @Override
+      public void onChanged(ListChangeListener.Change<? extends Task> change) {
+        LOG.log(Level.FINEST, "tasks list changed: {0}", change);
+
+        while (change.next()) {
+          if (change.wasAdded()) {
+            for (final Task task : change.getAddedSubList()) {
+              LOG.log(Level.FINEST, "task added: {0}", task);
+
+              /*
+               * if task done/failed/cancelled: remove listener and remove task from list
+               */
+              final EventHandler eventHandler = new EventHandler() {
+
+                @Override
+                public void handle(Event t) {
+//                  System.out.println("t: " + t.getEventType());
+
+                  if (t.getEventType().equals(WorkerStateEvent.WORKER_STATE_CANCELLED)
+                          || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_FAILED)
+                          || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_SUCCEEDED)) {
+                    task.removeEventHandler(WorkerStateEvent.ANY, this);
+                    currentTasks.remove(task);
+                  }
+                }
+              };
+              task.addEventHandler(WorkerStateEvent.ANY, eventHandler);
+            }
+          }
+        }
+      }
+    });
+  }
+
+  @Override
+  public Object call(Class<?> p) {
+    Object o = null;
+    try {
+      o = p.newInstance();
+
+      // gather instance
+      this.addController(o);
+      // inject actions manager if needed
+      this.processManagerAnnotations(o);
+
+    } catch (InstantiationException | IllegalAccessException ex) {
+      ex.printStackTrace();
+    }
+    return o;
+  }
+
+  /**
+   * Process annotations in the given object, i.e.: inject instances of the
+   * manager or the actions in the fields of the object. The actual handling
+   * (injection etc.) is delegated to the annotation handlers mapped to the
+   * annotation types.
+   *
+   * @param o
+   */
+  private void processAnnotations(Object o){
+    LOG.finest("processAnnotations " + o);
+
+    Class<?> klasse = o.getClass();
+
+    Field[] fields = klasse.getDeclaredFields();
+
+    for (Field field : fields) {
+      final Annotation[] declaredAnnotations = field.getDeclaredAnnotations();
+      if (declaredAnnotations.length == 0) {
+        continue;
+      }
+
+      Object control = null;
+
+      field.setAccessible(true);
+
+      for (Class annotationClass : this.handlerMap.keySet()) {
+        if (field.isAnnotationPresent(annotationClass)) {
+
+          Annotation annotation = field.getAnnotation(annotationClass);
+
+          this.handlerMap.get(annotationClass).handle(o, field, annotation);
+        }
+      }
+
+      if (field.isAnnotationPresent(FXBehaviour.class)) {
+        FXBehaviour fxBehaviour = field.getAnnotation(FXBehaviour.class);
+        String name = fxBehaviour.behaviour().getName();
+
+        try {
+          FXAbstractBehaviour behaviour = this.getBehaviour((Class<FXAbstractBehaviour>) Class.forName(name), fxBehaviour.useSharedInstance());
+
+          behaviour.bind((Node) control, behaviour.getAssignmentMode());
+
+        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+          Logger.getLogger(FXActionManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Inject instances of this manager.
+   *
+   * @param o
+   */
+  private void processManagerAnnotations(Object o){
+    Class<?> klasse = o.getClass();
+
+    Field[] fields = klasse.getDeclaredFields();
+
+    for (Field field : fields) {
+
+      try {
+        if (field.isAnnotationPresent(FXAManager.class)) {
+          field.setAccessible(true);
+          field.set(o, this);
+        }
+      } catch (IllegalArgumentException ex) {
+        LOG.log(Level.SEVERE, null, ex);
+      } catch (IllegalAccessException ex) {
+        LOG.log(Level.SEVERE, null, ex);
+      }
+    }
+  }
+
+  private void addController(Object o) {
+    try {
+      myControllersLock.lock();
+      this.myControllers.add(o);
+    } finally {
+      myControllersLock.unlock();
+    }
+  }
+
+  /**
+   * Initialize the actions that are annotated in the controllers, i.e., process
+   * the annotations of all objects that have been added to the controllers
+   * list. Each object is only processed once, so it is safe to invoke this
+   * method repeatedly.
+   */
+  public synchronized void initActions() {
+//    final Iterator<Object> iterator = myControllers.iterator();
+//    while (iterator.hasNext()) {
+//      Object object = myControllers.iterator().next();
+//      if (!this.myProcessedControllers.contains(object)) {
+//        this.processAnnotations(object);
+//      }
+//      this.myProcessedControllers.add(object);
+//    }
+    // leads to concurrent modification exception!
+    try {
+      myControllersLock.lock();
+      for (Object object : myControllers) {
+        if (!this.myProcessedControllers.contains(object)) {
+          this.processAnnotations(object);
+        }
+        this.myProcessedControllers.add(object);
+      }
+    } finally {
+      myControllersLock.unlock();
+    }
+  }
+
+  /**
+   * A variant of {@link initActions()} for use with already instantiated
+   * controllers.
+   *
+   *
+   * @param controller
+   */
+  public synchronized void initActions(Object controller) {
+    this.addController(controller);
+    this.processManagerAnnotations(controller);
+    this.initActions();
+  }
+
+  /**
+   * Factory method for action instances. An action is first looked for in the
+   * instances map. If it is not found, it gets created and registered in the
+   * map. Hence, this method manages always a single instance of every action.
+   *
+   * <p>This method also works with nested classes. If your action class is
+   * nested within a JavaFX controller, it may be important that the single
+   * instance of the action references members of one controller instance.
+   * In this case, provide a static getInstance()-Method that makes the
+   * controller behave like a (pseudo-)singleton.</p>
+   *
+   * @param <T>
+   * @param c
+   * @return The managed instance of the action class.
+   * @throws ClassNotFoundException
+   * @throws InstantiationException
+   * @throws IllegalAccessException
+   * @throws java.lang.NoSuchMethodException
+   * @throws java.lang.reflect.InvocationTargetException
+   */
+  public <T extends FXAbstractAction> T getAction(Class<T> c) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    T o = this.instanceMap.get(c);
+    if (o == null) {
+
+      // Action has an enclosing class, i.e. is an inner class?
+      Class<?> enclosingClass = c.getEnclosingClass();
+
+      if (enclosingClass != null) {
+        Class<?>[] argtypes = {};
+        final Method methodGetInstance = enclosingClass.getMethod("getInstance", argtypes);
+
+        if (methodGetInstance != null) {
+          Object enclosingInstance = methodGetInstance.invoke(null, (Object[]) argtypes);
+          Constructor<T> declaredConstructor = c.getDeclaredConstructor(enclosingClass);
+          o = declaredConstructor.newInstance(enclosingInstance);
+
+        } else {
+          Object enclosingInstance = enclosingClass.newInstance();
+          Constructor<T> declaredConstructor = c.getDeclaredConstructor(enclosingClass);
+          o = declaredConstructor.newInstance(enclosingInstance);
+        }
+
+      } else {
+        o =  c.newInstance();
+      }
+
+      o.setManager(this);
+      this.instanceMap.put(c, o);
+    }
+    return o;
+  }
+
+
+  public  <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c, boolean isSinglegon ) throws InstantiationException, IllegalAccessException {
+    if (isSinglegon) {
+      return c.newInstance();
+
+    } else {
+      return c.newInstance();
+    }
+  }
+
+
+  public ObservableList<Task> getCurrentTasks() {
+    return currentTaskProp.get();
+  }
+
+  /**
+   * Returns the map of action annotation classes and action handlers.
+   * @param actionAnnotation
+   * @param handler
+   */
+  public void addHandler(Class<? extends Annotation> actionAnnotation, AnnotationHandler handler) {
+    this.handlerMap.put(actionAnnotation, handler);
+  }
+
+  public ListProperty<Task> currentTasksProperty() {
+    return currentTaskProp;
+  }
+
+  public boolean isDoActionsAsync() {
+    return doActionsAsync.get();
+  }
+
+  public void setDoActionsAsync(boolean value) {
+    doActionsAsync.set(value);
+  }
+
+  public BooleanProperty doActionsAsyncProperty() {
+    return doActionsAsync;
+  }
+
+  /**
+   * Default action handler for the managed nodes: provides for asynchronous
+   * as well as synchronous execution of the assigned action.
+   *
+   * @param <T>
+   */
+  public class DefaultActionHandler<T extends Event> implements EventHandler<T> {
+
+    private final FXAbstractAction action;
+
+    public DefaultActionHandler(FXAbstractAction action) {
+      this.action = action;
+    }
+
+    @Override
+    public void handle(T t) {
+      t.consume();
+
+      if (action.isRunning() || action.isDisabled()) {
+        return;
+      }
+
+      if (doActionsAsync.get()) {
+        // async exec:
+        action.setLastEvent(t);
+        if (!action.stateProperty().get().equals(Worker.State.READY)) {
+          action.reset();
+        }
+        action.start();
+      } else {
+        action.onAction(t); // synchronous execution
+      }
+    }
+  }
+}
