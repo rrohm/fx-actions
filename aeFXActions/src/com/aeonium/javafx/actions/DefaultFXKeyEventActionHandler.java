@@ -117,11 +117,11 @@ public class DefaultFXKeyEventActionHandler implements AnnotationHandler<FXKeyEv
     @Override
     public void handle(KeyEvent event) {
 
-      System.out.println("MultiKeyHandler.handle " + event);
+//      System.out.println("MultiKeyHandler.handle " + event);
       Set<KeyCombination> keySet = this.actions.keySet();
       for (KeyCombination keys : keySet) {
         if (keys.match(event)) {
-          System.out.println("   -> do " + actions.get(keys));
+//          System.out.println("   -> do " + actions.get(keys));
           actions.get(keys).onAction(event);
           return;
         }

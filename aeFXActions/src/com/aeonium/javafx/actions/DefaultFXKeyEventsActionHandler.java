@@ -36,7 +36,7 @@ public class DefaultFXKeyEventsActionHandler implements AnnotationHandler<FXKeyE
   private FXActionManager manager;
 
   {
-    System.out.println("DefaultFXKeyEventsActionHandler >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+//    System.out.println("DefaultFXKeyEventsActionHandler >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
   }
 
   public DefaultFXKeyEventsActionHandler() {
@@ -48,7 +48,7 @@ public class DefaultFXKeyEventsActionHandler implements AnnotationHandler<FXKeyE
 
   @Override
   public void handle(Object controller, Field field, FXKeyEventActions annotation) {
-    System.out.println("DefaultFXKeyEventsActionHandler.handle " + annotation);
+//    System.out.println("DefaultFXKeyEventsActionHandler.handle " + annotation);
     FXKeyEventAction[] keyeventActions = annotation.value();
     for (FXKeyEventAction keyeventAction : keyeventActions) {
       try {

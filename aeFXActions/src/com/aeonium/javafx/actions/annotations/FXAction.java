@@ -28,7 +28,8 @@ import com.aeonium.javafx.actions.FXAbstractAction;
 import java.lang.annotation.Repeatable;
 
 /**
- * Marks a field with an action class
+ * Marks a field with an action class.
+ * 
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
 @Documented
@@ -47,7 +48,7 @@ public @interface FXAction {
    * Whether mnemonic parsing should be applied for labeled controls (defaults
    * to true).
    *
-   * @return
+   * @return Whether mnemonic parsing should be applied for labeled controls.
    */
   public boolean doMnemonicParsing() default true;
 
@@ -55,7 +56,7 @@ public @interface FXAction {
    * Whether to show the action title.
    * Use this to override the display mode for single controls.
    * Default is <code>true</code>.
-   * @return
+   * @return Whether to show the action title.
    */
   public boolean doShowText() default true;
 
@@ -64,7 +65,7 @@ public @interface FXAction {
    * Use this to override the display mode for single controls.
    * Default is <code>true</code>.
    *
-   * @return
+   * @return Whether to show the action graphic, if any is provided.
    */
   public boolean doShowGraphic() default true;
 
@@ -72,7 +73,7 @@ public @interface FXAction {
    * Whether the action should be executed asynchronous.
    * Default is <code>true</code>.
    *
-   * @return
+   * @return Whether the action should be executed asynchronous.
    */
   public boolean doAsync() default true;
 }
