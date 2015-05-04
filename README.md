@@ -98,7 +98,11 @@ when loading the FXML UI. After loading the UI, the action manager initializes t
     
     myActionControllerFactory.initActions();
 ```
-That's it!
+That's it! Soon there will be more information in the wiki pages, e.g. on
+* Setting action properties like caption, tooltips and icons
+* enabling and disabling actions with bindings
+* binding actions to keyboard shortcuts
+* ...
 
 
 Project History
