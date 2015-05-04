@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.actions;
 
 import com.aeonium.javafx.behaviour.FXAbstractBehaviour;
@@ -58,7 +57,8 @@ import javafx.scene.Node;
 import javafx.util.Callback;
 
 /**
- * <p>The FXActionManager is a controller factory as well as an annotation
+ * <p>
+ * The FXActionManager is a controller factory as well as an annotation
  * processor. It is used to create the controller for a JavaFX FXML document,
  * and subsequently search the controller instance for runtime annotations that
  * describe the mapping of actions to ui elements. Use in in a way like: </p>
@@ -66,41 +66,44 @@ import javafx.util.Callback;
  * <pre>
  *
  * {@literal public void start(Stage stage) throws Exception {
-    FXActionManager myActionControllerFactory = new FXActionManager();
-
-    // Shortcut, if you have a fxml without stylesheets
-    //Parent root = FXMLLoader.load(
-    //        getClass().getResource("FXMLDocument.fxml"),
-    //        null,
-    //        null, myActionControllerFactory);
-
-    // use this approach if the fxml uses stylesheets:
-    FXMLLoader fxmlLoader = new FXMLLoader();
-    fxmlLoader.setLocation(getClass().getResource("FXMLDocument.fxml"));
-    fxmlLoader.setControllerFactory(myActionControllerFactory);
-    Parent root = (Parent) fxmlLoader.load();
-
-    myActionControllerFactory.initActions();
-
-    // optional: get the action by its type and parametrize it:
-    MyAction action = myActionControllerFactory.getAction(MyAction.class);
-    action.setText("Erste Aktion");
-
-    Scene scene = new Scene(root);
-
-    stage.setScene(scene);
-    stage.show();
-  }
- }
+ * FXActionManager myActionControllerFactory = new FXActionManager();
+ *
+ * // Shortcut, if you have a fxml without stylesheets
+ * //Parent root = FXMLLoader.load(
+ * //        getClass().getResource("FXMLDocument.fxml"),
+ * //        null,
+ * //        null, myActionControllerFactory);
+ *
+ * // use this approach if the fxml uses stylesheets:
+ * FXMLLoader fxmlLoader = new FXMLLoader();
+ * fxmlLoader.setLocation(getClass().getResource("FXMLDocument.fxml"));
+ * fxmlLoader.setControllerFactory(myActionControllerFactory);
+ * Parent root = (Parent) fxmlLoader.load();
+ *
+ * myActionControllerFactory.initActions();
+ *
+ * // optional: get the action by its type and parametrize it:
+ * MyAction action = myActionControllerFactory.getAction(MyAction.class);
+ * action.setText("Erste Aktion");
+ *
+ * Scene scene = new Scene(root);
+ *
+ * stage.setScene(scene);
+ * stage.show();
+ * }
+ * }
  * </pre>
  *
- * <p>As the example shows, the <code>.getAction()</code>-Method is used as a
+ * <p>
+ * As the example shows, the <code>.getAction()</code>-Method is used as a
  * universal factory method for the action instances. You may create actions
  * yourself, but this is not the recommended way.
  * </p>
- * <p><strong>Please note: </strong>This approach implies that your actions should be thought of as "quasi-singletons",
- * i.e., the FXActionManager only knows one instance of each action class. This
- * is a design constraint that should be taken care of.
+ * <p>
+ * <strong>Please note: </strong>This approach implies that your actions should
+ * be thought of as "quasi-singletons", i.e., the FXActionManager only knows one
+ * instance of each action class. This is a design constraint that should be
+ * taken care of.
  * </p>
  *
  * @author robert rohm
@@ -109,20 +112,49 @@ public class FXActionManager implements Callback<Class<?>, Object> {
 
   private static final Logger LOG = Logger.getLogger(FXActionManager.class.getName());
 
+  /**
+   * List of controlles registered with this action manager instance.
+   */
   private final List<Object> myControllers = Collections.synchronizedList(new ArrayList<>());
+
+  /**
+   * List of the controllers that are already initialized.
+   */
   private final List<Object> myProcessedControllers = Collections.synchronizedList(new ArrayList<>());
 
+  /**
+   * Map for the action instances - at present, the action mananager maintaines
+   * only a single instance for each action class.
+   */
   private final InstanceMap<? extends FXAbstractAction> instanceMap = new InstanceMap<>();
 
+  /**
+   * An observable list for currently running tasks - the action manager puts
+   * any action into this list as soon as it gets startet, and it removes it
+   * from this list, if it is done.
+   */
   private final ObservableList<Task> currentTasks = FXCollections.observableArrayList();
+
+  /**
+   * Property for the list of currently running tasks.
+   */
   private final ListProperty<Task> currentTaskProp = new SimpleListProperty(this.currentTasks);
 
+  /**
+   * Whether to execute actions synchronously or asynchronously - defaults to
+   * true, since you might not want to block the UI.
+   */
   private final BooleanProperty doActionsAsync = new SimpleBooleanProperty(true);
 
+  /**
+   * Map for maintaining the mapping of handlers to action classes.
+   */
   private final Map<Class, AnnotationHandler> handlerMap;
 
+  /**
+   * Lock for synchronizing access to the controllers list.
+   */
   private final Lock myControllersLock = new ReentrantLock();
-
 
   public FXActionManager() {
     this.handlerMap = new HashMap<>();
@@ -149,7 +181,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
 
                 @Override
                 public void handle(Event t) {
-//                  System.out.println("t: " + t.getEventType());
+                  LOG.log(Level.FINEST, "removing listener because of: {0}", t.getEventType());
 
                   if (t.getEventType().equals(WorkerStateEvent.WORKER_STATE_CANCELLED)
                           || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_FAILED)
@@ -192,7 +224,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    *
    * @param o
    */
-  private void processAnnotations(Object o){
+  private void processAnnotations(Object o) {
     LOG.finest("processAnnotations " + o);
 
     Class<?> klasse = o.getClass();
@@ -234,13 +266,12 @@ public class FXActionManager implements Callback<Class<?>, Object> {
     }
   }
 
-
   /**
    * Inject instances of this manager.
    *
    * @param o
    */
-  private void processManagerAnnotations(Object o){
+  private void processManagerAnnotations(Object o) {
     Class<?> klasse = o.getClass();
 
     Field[] fields = klasse.getDeclaredFields();
@@ -299,11 +330,11 @@ public class FXActionManager implements Callback<Class<?>, Object> {
   }
 
   /**
-   * A variant of {@link initActions()} for use with already instantiated
+   * A variant of {@link #initActions()} for use with already instantiated
    * controllers.
    *
    *
-   * @param controller
+   * @param controller The controller to be initialized
    */
   public synchronized void initActions(Object controller) {
     this.addController(controller);
@@ -316,20 +347,21 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * instances map. If it is not found, it gets created and registered in the
    * map. Hence, this method manages always a single instance of every action.
    *
-   * <p>This method also works with nested classes. If your action class is
-   * nested within a JavaFX controller, it may be important that the single
-   * instance of the action references members of one controller instance.
-   * In this case, provide a static getInstance()-Method that makes the
-   * controller behave like a (pseudo-)singleton.</p>
+   * <p>
+   * This method also works with nested classes. If your action class is nested
+   * within a JavaFX controller, it may be important that the single instance of
+   * the action references members of one controller instance. In this case,
+   * provide a static getInstance()-Method that makes the controller behave like
+   * a (pseudo-)singleton.</p>
    *
-   * @param <T>
-   * @param c
+   * @param <T> The action type
+   * @param c The action class type
    * @return The managed instance of the action class.
-   * @throws ClassNotFoundException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws java.lang.NoSuchMethodException
-   * @throws java.lang.reflect.InvocationTargetException
+   * @throws ClassNotFoundException Thrown when the action class is not accesible
+   * @throws InstantiationException Thrown when the action class is not accesible
+   * @throws IllegalAccessException Thrown when access to the getInstance method in the controller is not accessible.
+   * @throws java.lang.NoSuchMethodException Thrown when there is no getInstance method in the controller
+   * @throws java.lang.reflect.InvocationTargetException Thrown when the getInstance method cannot be invoked
    */
   public <T extends FXAbstractAction> T getAction(Class<T> c) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
     T o = this.instanceMap.get(c);
@@ -354,7 +386,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
         }
 
       } else {
-        o =  c.newInstance();
+        o = c.newInstance();
       }
 
       o.setManager(this);
@@ -363,8 +395,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
     return o;
   }
 
-
-  public  <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c, boolean isSinglegon ) throws InstantiationException, IllegalAccessException {
+  public <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c, boolean isSinglegon) throws InstantiationException, IllegalAccessException {
     if (isSinglegon) {
       return c.newInstance();
 
@@ -373,41 +404,65 @@ public class FXActionManager implements Callback<Class<?>, Object> {
     }
   }
 
-
   public ObservableList<Task> getCurrentTasks() {
     return currentTaskProp.get();
   }
 
   /**
-   * Returns the map of action annotation classes and action handlers.
-   * @param actionAnnotation
-   * @param handler
+   * Add a new handler for a new annotation type.
+   *
+   * @param actionAnnotation The annotation to be handled.
+   * @param handler The handler for the annotation.
    */
   public void addHandler(Class<? extends Annotation> actionAnnotation, AnnotationHandler handler) {
     this.handlerMap.put(actionAnnotation, handler);
   }
 
+  /**
+   * Returns a reference to the list property that holds the currently running
+   * tasks. You may use this for progress monitoring etc.
+   *
+   * @return The list property for current tasks.
+   */
   public ListProperty<Task> currentTasksProperty() {
     return currentTaskProp;
   }
 
+  /**
+   * Whether the FXActionManager instance executes the actions in general
+   * asynchronosly or sanchronously.
+   *
+   * @return Flag for sync. or async execution.
+   */
   public boolean isDoActionsAsync() {
     return doActionsAsync.get();
   }
 
+  /**
+   * Determine whether the actions should be in general executed snchronously or
+   * asynchronously - default is async.
+   *
+   * @param value Flag for sync. or async execution.
+   */
   public void setDoActionsAsync(boolean value) {
     doActionsAsync.set(value);
   }
 
+  /**
+   * Whether the FXActionManager instance executes the actions in general
+   * asynchronosly or sanchronously.
+   *
+   * @return JavaFX property for the flag.
+   */
   public BooleanProperty doActionsAsyncProperty() {
     return doActionsAsync;
   }
 
   /**
-   * Default action handler for the managed nodes: provides for asynchronous
-   * as well as synchronous execution of the assigned action.
+   * Default action handler for the managed nodes: provides for asynchronous as
+   * well as synchronous execution of the assigned action.
    *
-   * @param <T>
+   * @param <T> The event type.
    */
   public class DefaultActionHandler<T extends Event> implements EventHandler<T> {
 

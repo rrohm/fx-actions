@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.actions;
 
 import com.aeonium.javafx.actions.annotations.AnnotationHandler;
@@ -33,10 +32,13 @@ import java.util.logging.Logger;
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
  */
 public class DefaultFXKeyEventsActionHandler implements AnnotationHandler<FXKeyEventActions> {
+
+  private static final Logger LOG = Logger.getLogger(DefaultFXKeyEventsActionHandler.class.getName());
+
   private FXActionManager manager;
 
   {
-//    System.out.println("DefaultFXKeyEventsActionHandler >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+    // 
   }
 
   public DefaultFXKeyEventsActionHandler() {
@@ -48,7 +50,8 @@ public class DefaultFXKeyEventsActionHandler implements AnnotationHandler<FXKeyE
 
   @Override
   public void handle(Object controller, Field field, FXKeyEventActions annotation) {
-//    System.out.println("DefaultFXKeyEventsActionHandler.handle " + annotation);
+    LOG.log(Level.FINEST, "DefaultFXKeyEventsActionHandler.handle {0}", annotation);
+    
     FXKeyEventAction[] keyeventActions = annotation.value();
     for (FXKeyEventAction keyeventAction : keyeventActions) {
       try {

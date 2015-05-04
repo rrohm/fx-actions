@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.actions;
 
 import java.util.logging.Logger;
@@ -38,13 +37,13 @@ import javafx.scene.input.KeyCombination;
  * service. Thus, it uses tasks for encapsulating the action logic. You can use
  * this base class in two different ways:
  * <ol>
- *   <li>The first, convenient way is to implement your action logic in the
+ * <li>The first, convenient way is to implement your action logic in the
  * onAction() method. This is suitable for simple actions that will not take
  * much time - and thus will not need progress tracking.
- *   </li>
- *   <li>If your action needs progress tracking and a more sophisticated task
+ * </li>
+ * <li>If your action needs progress tracking and a more sophisticated task
  * logic, then you better implement your custom onCreateTask factory method.
- *   </li>
+ * </li>
  * </ol>
  *
  * @author robert rohm
@@ -58,7 +57,6 @@ public abstract class FXAbstractAction extends Service {
    * monitoring etc.
    */
   private FXActionManager manager = null;
-
 
   private final BooleanProperty disable = new SimpleBooleanProperty();
 
@@ -92,9 +90,8 @@ public abstract class FXAbstractAction extends Service {
    */
   protected boolean doExecuteAsync = true;
 
-
   /**
-   *
+   * Create a new instance.
    */
   public FXAbstractAction() {
     final FXAbstractAction me = this;
@@ -118,19 +115,17 @@ public abstract class FXAbstractAction extends Service {
   }
 
   /**
-   * Default implementation: create a new Task from the Service and put
-   * the task into the manager's current tasks list. The default task invokes
-   * the onAction method of the action imlementation. This method also checks
-   * if your action implements the onCreateTask method in order to create a
-   * custom task implementation.
+   * Default implementation: create a new Task from the Service and put the task
+   * into the manager's current tasks list. The default task invokes the
+   * onAction method of the action imlementation. This method also checks if
+   * your action implements the onCreateTask method in order to create a custom
+   * task implementation.
    *
-   * @return
+   * @return The tast to be executed by the service.
    */
   @Override
   protected Task createTask() {
-    LOG.finest(" createTask");
-//    System.err.println("createTask " + this.getClass().getName());
-//    System.err.println("createTask " + Thread.currentThread().getName());
+    LOG.finest("createTask");
 
     final FXAbstractAction me = this;
     final Task customTask = this.onCreateTask();
@@ -178,35 +173,35 @@ public abstract class FXAbstractAction extends Service {
     }
   }
 
-
   /**
-   * This is a convenience method where you can place you action logic if you
-   * do not need to update task progress etc.
+   * This is a convenience method where you can place you action logic if you do
+   * not need to update task progress etc.
    *
-   * @param event
+   * @param event The event that triggered the action.
    */
-  protected void onAction(Event event){
+  protected void onAction(Event event) {
     System.err.println("FXAbstractAction.onAction -----------------------------");
   }
 
   /**
    * Override this method in order to create your own task implementation - in
    * this case you may leave the onAction Method empty.
-   * @return
+   *
+   * @return The task to be executed by the service
    */
-  protected Task onCreateTask(){
+  protected Task onCreateTask() {
     return null;
   }
 
-  public KeyCombination getKeyCombination(){
+  public KeyCombination getKeyCombination() {
     return this.keyCombination.get();
   }
 
-  public void setKeyCombination(KeyCombination kc){
+  public void setKeyCombination(KeyCombination kc) {
     this.keyCombination.set(kc);
   }
 
-  public ObjectProperty<KeyCombination> keyCombinationProperty(){
+  public ObjectProperty<KeyCombination> keyCombinationProperty() {
     return this.keyCombination;
   }
 
@@ -214,7 +209,7 @@ public abstract class FXAbstractAction extends Service {
     return text.get();
   }
 
-  public Event getLastEvent(){
+  public Event getLastEvent() {
     return this.lastEvent;
   }
 
@@ -229,7 +224,7 @@ public abstract class FXAbstractAction extends Service {
   /**
    * The text property of an action will be used as label or caption.
    *
-   * @return The text property of the action, or an  empty string if unused
+   * @return The text property of the action, or an empty string if unused
    */
   public StringProperty textProperty() {
     return text;
@@ -244,8 +239,8 @@ public abstract class FXAbstractAction extends Service {
   }
 
   /**
-   * An optional tooltip for the action. Controls using the action will be
-   * bound to this tooltip where applicable.
+   * An optional tooltip for the action. Controls using the action will be bound
+   * to this tooltip where applicable.
    *
    * @return The tooltip property or null if not assigned.
    */
@@ -284,7 +279,6 @@ public abstract class FXAbstractAction extends Service {
   public void setManager(FXActionManager manager) {
     this.manager = manager;
   }
-
 
   public boolean isDoExecuteAsync() {
     return doExecuteAsync;

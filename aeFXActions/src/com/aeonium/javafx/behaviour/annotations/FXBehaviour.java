@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.behaviour.annotations;
 
 import com.aeonium.javafx.behaviour.FXAbstractBehaviour;
@@ -28,7 +27,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks a field with a custom behaviour class - this is the "swiss army knife"
- * of the behaviour annotations. 
+ * of the behaviour annotations.
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  * @deprecated Experimental - do not use yet!
@@ -40,6 +39,7 @@ public @interface FXBehaviour {
 
   /**
    * The class of the action.
+   *
    * @return The action type
    */
   public Class<? extends FXAbstractBehaviour> behaviour();
@@ -56,11 +56,12 @@ public @interface FXBehaviour {
    * Whether to use a shared behaviour instance for all nodes that use this
    * behaviour.
    *
-   * @return
+   * @return Whether to use a shared behaviour instance or create multiple
+   * instances.
    * @deprecated Experimental! Better make the Behaviour implpementation
-   *             responsible for deciding whether to use a singleton or not.
-   *             This should then only server for overriding that default.
-   *             ... but check whether this makes sense at all!
+   * responsible for deciding whether to use a singleton or not. This should
+   * then only server for overriding that default. ... but check whether this
+   * makes sense at all!
    */
   public boolean useSharedInstance() default false;
 }

@@ -16,36 +16,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
-package com.aeonium.javafx.actions.test;
-
-import com.aeonium.javafx.actions.FXAbstractAction;
-import javafx.event.Event;
-import javafx.fxml.FXML;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-
 /**
- * A simple example action - a mere "dummy".
+ * <strong>Experimental - do not use yet:</strong> Extension for progress
+ * tracking.
  *
- * @author robert rohm
+ * @version 0.1-pre
+ * @author Robert Rohm
  */
-public class MyAction extends FXAbstractAction{
-
-  public MyAction() {
-    this.setText("_Erstens ...");
-    this.setTooltip(new Tooltip("Die erste Aktion"));
-    this.setImage(new Image("com/aeonium/javafx/actions/ae_icons_16_task.png"));
-
-// does not throw an exception, but does not show the image either. (?):
-//    this.setImage(new Image("file:ae_icons_16_task.png"));
-  }
-
-
-
-  @FXML
-  @Override
-  public void onAction(Event event){
-    System.out.println("!!!!!!!!!!!!!!!!!!!!");
-  }
-}
+package com.aeonium.javafx.actions.progress;

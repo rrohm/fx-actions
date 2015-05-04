@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.actions.annotations;
 
 import java.lang.annotation.Annotation;
@@ -27,15 +26,16 @@ import java.lang.reflect.Field;
  *
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
  * @param <T> The type of annotation that shall be handled by an implementation
- *            of this imterface.
+ * of this imterface.
  */
 public interface AnnotationHandler<T extends Annotation> {
 
   /**
+   * Handle an annotated field in a controller.
    *
-   * @param controller
-   * @param field
-   * @param annotation
+   * @param controller The annotated controller
+   * @param field The annotated field
+   * @param annotation The annotation
    */
   public void handle(Object controller, Field field, T annotation);
 

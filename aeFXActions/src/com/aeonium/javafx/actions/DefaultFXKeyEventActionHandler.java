@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.concurrent.Worker;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCodeCombination;
@@ -40,8 +41,10 @@ import javafx.scene.input.KeyEvent;
  */
 public class DefaultFXKeyEventActionHandler implements AnnotationHandler<FXKeyEventAction> {
 
+  private static final Logger LOG = Logger.getLogger(MultiKeyHandler.class.getName());
+
   /**
-   *
+   * 
    */
   private static final Map<Node, MultiKeyHandler> handlers = new HashMap<>();
 
@@ -109,20 +112,36 @@ public class DefaultFXKeyEventActionHandler implements AnnotationHandler<FXKeyEv
     }
   }
 
-
+  /**
+   * The default key event handler.
+   */
   public static class MultiKeyHandler implements EventHandler<KeyEvent> {
 
-    private Map<KeyCombination, FXAbstractAction> actions = new HashMap<>();
+    private final Map<KeyCombination, FXAbstractAction> actions = new HashMap<>();
 
     @Override
     public void handle(KeyEvent event) {
 
-//      System.out.println("MultiKeyHandler.handle " + event);
       Set<KeyCombination> keySet = this.actions.keySet();
       for (KeyCombination keys : keySet) {
         if (keys.match(event)) {
-//          System.out.println("   -> do " + actions.get(keys));
-          actions.get(keys).onAction(event);
+          final FXAbstractAction action = actions.get(keys);
+
+          if (action.isRunning() || action.isDisabled()) {
+            return;
+          }
+
+          if (action.isDoExecuteAsync()) {
+            LOG.finest("MultiKeyHandler exec async");
+            action.setLastEvent(event);
+            if (!action.stateProperty().get().equals(Worker.State.READY)) {
+              action.reset();
+            }
+            action.start();
+          } else {
+            LOG.finest("MultiKeyHandler exec sync");
+            action.onAction(event);
+          }
           return;
         }
       }

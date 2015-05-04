@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.actions;
 
 import com.aeonium.javafx.actions.annotations.AnnotationHandler;
@@ -39,6 +38,7 @@ import javafx.scene.image.ImageView;
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
  */
 public class DefaultFXActionHandler implements AnnotationHandler<FXAction> {
+
   private FXActionManager manager;
 
   public DefaultFXActionHandler() {
@@ -68,17 +68,16 @@ public class DefaultFXActionHandler implements AnnotationHandler<FXAction> {
     }
 
     if (control instanceof ButtonBase) {
-      initButtonBase((ButtonBase)control, action, fxAction);
+      initButtonBase((ButtonBase) control, action, fxAction);
 
     } else if (control instanceof MenuItem) {
-      initMenuItem((MenuItem)control, action, fxAction);
+      initMenuItem((MenuItem) control, action, fxAction);
 
     } else if (control instanceof Labeled) {
-      initLabeled((Labeled)control, fxAction, action);
+      initLabeled((Labeled) control, fxAction, action);
     }
 
     if (control instanceof Control) {
-//System.out.println("- is Control");
       Control control1 = (Control) control;
       control1.tooltipProperty().bind(action.tooltipProperty());
     }
@@ -86,12 +85,12 @@ public class DefaultFXActionHandler implements AnnotationHandler<FXAction> {
 
   /**
    * Bind an action to a Labeled node or a descendant of Labeled.
+   *
    * @param control
    * @param fxAction
    * @param action
    */
   private void initLabeled(Labeled labeled, FXAction fxAction, final FXAbstractAction action) {
-    //System.out.println("- is Labeled");
 
     if (fxAction.doShowText()) {
       labeled.textProperty().bind(action.textProperty());
@@ -109,11 +108,9 @@ public class DefaultFXActionHandler implements AnnotationHandler<FXAction> {
     // doShowGraphic?
     if (!fxAction.doShowGraphic()) {
       labeled.setContentDisplay(ContentDisplay.TEXT_ONLY);
-    } else if (action.getImage() != null ) {
-//System.out.println("- - and has Image in Action");
+    } else if (action.getImage() != null) {
       ImageView imageView = new ImageView(action.getImage());
       labeled.setGraphic(imageView);
-//              labeled.setGraphic(imageView);
     }
   }
 
@@ -136,16 +133,14 @@ public class DefaultFXActionHandler implements AnnotationHandler<FXAction> {
   }
 
   private void initButtonBase(ButtonBase buttonBase, final FXAbstractAction action, FXAction fxAction) {
-    //System.out.println("- is ButtonBase");
 
     buttonBase.setOnAction(new com.aeonium.javafx.actions.DefaultActionHandler<>(action, !fxAction.doAsync()));
 //    buttonBase.addEventHandler(MouseEvent.MOUSE_CLICKED, new DefaultActionHandler(action));
 
-
     if (!fxAction.doShowGraphic()) {
       buttonBase.setContentDisplay(ContentDisplay.TEXT_ONLY);
 
-    } else if (action.getImage() != null ) {
+    } else if (action.getImage() != null) {
       ImageView imageView = new ImageView(action.getImage());
       buttonBase.setGraphic(imageView);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.actions.progress;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -53,14 +52,11 @@ public class SimpleProgressTextAdapter implements ListChangeListener<Task> {
       if (change.wasAdded()) {
         for (Task t : change.getAddedSubList()) {
 
-          System.out.println(t.getTitle() + " ...");
           progressText.set(t.getTitle() + " ...");
         }
       }
       if (change.wasRemoved()) {
-        System.out.println("Tasks removed: " + change.getRemovedSize());
         for (Task t : change.getRemoved()) {
-          System.out.println(t.getTitle() + " OK.");
           progressText.set(t.getTitle() + " OK.");
         }
       }
