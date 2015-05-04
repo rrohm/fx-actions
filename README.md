@@ -71,7 +71,7 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     @FXAction(action = MyAction.class)
-    private Label label;
+    private Button button;
 
     @FXML
     @FXAction(action = MyAction.class)
