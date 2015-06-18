@@ -11,9 +11,10 @@ About the project
 
 Goal of the fx-actions project is to provide Java developers with a easy-to-use
 framework for implementing application logic in action classes and declaratively
-wiring them to an FXML UI, i.e., you create the UI with FXML, deklare the UI
+wiring them to an FXML UI, i.e., you create the UI with FXML, declare the UI
 controls in the controller class and simply annotate them with your action
-class. No more writing lots of lines for creating event handlers!
+classes. No more writing lots of lines for creating event handlers!
+
 The project is open source, the code is made available under LGPL 2.1.
 
 How it works
@@ -39,7 +40,7 @@ the FXML, containing MenuItem and Button instance that we want to wire the actio
 ```
 Note: you do not need to declare any handler methods in the FXML! Action logic should be 
 encapsulated, and not tied to a controller class. Also, action logic is a part of the 
-controller tie, not a part of the UI. So, the controller would need only fields for 
+controller tier, not a part of the UI. So, the controller would need only fields for 
 referencing the button and the menu item. 
 
 Next, you put your logic in action classes. Actions should be executed asynchronously, 
