@@ -16,12 +16,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
-
 /**
- * <strong>Experimental - do not use yet:</strong> Extension for adding
- * behaviour to the UI, implemented as reusable behaviour
- * classes that get bound to the controls by annotations.
+ * Base classes for the behaviour part of the framework - this is merely the
+ * annotation, the default annotation handler and the base class for all custom
+ * behaviour implementations.
  *
  * @version 0.1-pre
  * @author Robert Rohm

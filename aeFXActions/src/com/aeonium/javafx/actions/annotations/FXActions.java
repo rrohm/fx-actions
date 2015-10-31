@@ -16,7 +16,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.actions.annotations;
 
 import java.lang.annotation.Documented;
@@ -26,6 +25,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Repeater annotation for @FXAction.
  *
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
  */
@@ -34,5 +34,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FXActions {
 
+  /**
+   * The @FXAction annotations.
+   *
+   * @return The @FXAction annotations.
+   */
   FXAction[] value();
 }

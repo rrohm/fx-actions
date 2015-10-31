@@ -16,18 +16,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-
 package com.aeonium.javafx.behaviour;
 
 import com.aeonium.javafx.actions.FXActionManager;
 import com.aeonium.javafx.actions.annotations.AnnotationHandler;
-import com.aeonium.javafx.behaviour.annotations.FXBehaviour;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;
 
 /**
+ * The default annotation handler for the FXBehaviour annotation.
  *
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
  */
@@ -42,15 +41,22 @@ public class DefaultFXBehaviourHandler implements AnnotationHandler<FXBehaviour>
     this.manager = manager;
   }
 
+  /**
+   * Bind the behaviour to the node references by the field of the given
+   * controller, therefore a new instance of the behaviour class is created.
+   *
+   * @param controller
+   * @param field
+   * @param action
+   */
   @Override
   public void handle(Object controller, Field field, FXBehaviour action) {
     try {
-      System.out.println("DefaultFXBehaviourHandler " + controller + ", " + field.getName() + " " + action.getClass().getName());
 
       FXBehaviour fxBehaviour = field.getAnnotation(FXBehaviour.class);
       String name = fxBehaviour.behaviour().getName();
 
-      FXAbstractBehaviour behaviour = this.manager.getBehaviour((Class<FXAbstractBehaviour>) Class.forName(name), fxBehaviour.useSharedInstance());
+      FXAbstractBehaviour behaviour = this.manager.getBehaviour((Class<FXAbstractBehaviour>) Class.forName(name));
 
       Object control = field.get(controller);
       behaviour.bind((Node) control, behaviour.getAssignmentMode());

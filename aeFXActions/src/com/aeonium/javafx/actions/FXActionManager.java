@@ -24,7 +24,7 @@ import com.aeonium.javafx.actions.util.InstanceMap;
 import com.aeonium.javafx.actions.annotations.AnnotationHandler;
 import com.aeonium.javafx.actions.annotations.FXAManager;
 import com.aeonium.javafx.actions.annotations.FXAction;
-import com.aeonium.javafx.behaviour.annotations.FXBehaviour;
+import com.aeonium.javafx.behaviour.FXBehaviour;
 import com.aeonium.javafx.actions.annotations.FXKeyEventAction;
 import com.aeonium.javafx.actions.annotations.FXKeyEventActions;
 import java.lang.annotation.Annotation;
@@ -158,9 +158,9 @@ public class FXActionManager implements Callback<Class<?>, Object> {
 
   public FXActionManager() {
     this.handlerMap = new HashMap<>();
-    this.handlerMap.put(FXAction.class, new DefaultFXActionHandler(this));
-    this.handlerMap.put(FXKeyEventAction.class, new DefaultFXKeyEventActionHandler(this));
-    this.handlerMap.put(FXKeyEventActions.class, new DefaultFXKeyEventsActionHandler(this));
+    this.handlerMap.put(FXAction.class, new DefaultAnnotationHandler(this));
+    this.handlerMap.put(FXKeyEventAction.class, new DefaultKeyEventAnnotationHandler(this));
+    this.handlerMap.put(FXKeyEventActions.class, new DefaultKeyEventsAnnotationHandler(this));
     this.handlerMap.put(FXBehaviour.class, new DefaultFXBehaviourHandler(this));
 
     this.currentTasks.addListener(new ListChangeListener<Task>() {
@@ -250,19 +250,19 @@ public class FXActionManager implements Callback<Class<?>, Object> {
         }
       }
 
-      if (field.isAnnotationPresent(FXBehaviour.class)) {
-        FXBehaviour fxBehaviour = field.getAnnotation(FXBehaviour.class);
-        String name = fxBehaviour.behaviour().getName();
-
-        try {
-          FXAbstractBehaviour behaviour = this.getBehaviour((Class<FXAbstractBehaviour>) Class.forName(name), fxBehaviour.useSharedInstance());
-
-          behaviour.bind((Node) control, behaviour.getAssignmentMode());
-
-        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
-          Logger.getLogger(FXActionManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-      }
+//      if (field.isAnnotationPresent(FXBehaviour.class)) {
+//        FXBehaviour fxBehaviour = field.getAnnotation(FXBehaviour.class);
+//        String name = fxBehaviour.behaviour().getName();
+//
+//        try {
+//          FXAbstractBehaviour behaviour = this.getBehaviour((Class<FXAbstractBehaviour>) Class.forName(name), fxBehaviour.useSharedInstance());
+//
+//          behaviour.bind((Node) control, behaviour.getAssignmentMode());
+//
+//        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
+//          Logger.getLogger(FXActionManager.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//      }
     }
   }
 
@@ -283,9 +283,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
           field.setAccessible(true);
           field.set(o, this);
         }
-      } catch (IllegalArgumentException ex) {
-        LOG.log(Level.SEVERE, null, ex);
-      } catch (IllegalAccessException ex) {
+      } catch (IllegalArgumentException | IllegalAccessException ex) {
         LOG.log(Level.SEVERE, null, ex);
       }
     }
@@ -357,11 +355,16 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * @param <T> The action type
    * @param c The action class type
    * @return The managed instance of the action class.
-   * @throws ClassNotFoundException Thrown when the action class is not accesible
-   * @throws InstantiationException Thrown when the action class is not accesible
-   * @throws IllegalAccessException Thrown when access to the getInstance method in the controller is not accessible.
-   * @throws java.lang.NoSuchMethodException Thrown when there is no getInstance method in the controller
-   * @throws java.lang.reflect.InvocationTargetException Thrown when the getInstance method cannot be invoked
+   * @throws ClassNotFoundException Thrown when the action class is not
+   * accesible
+   * @throws InstantiationException Thrown when the action class is not
+   * accesible
+   * @throws IllegalAccessException Thrown when access to the getInstance method
+   * in the controller is not accessible.
+   * @throws java.lang.NoSuchMethodException Thrown when there is no getInstance
+   * method in the controller
+   * @throws java.lang.reflect.InvocationTargetException Thrown when the
+   * getInstance method cannot be invoked
    */
   public <T extends FXAbstractAction> T getAction(Class<T> c) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
     T o = this.instanceMap.get(c);
@@ -395,13 +398,46 @@ public class FXActionManager implements Callback<Class<?>, Object> {
     return o;
   }
 
-  public <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c, boolean isSinglegon) throws InstantiationException, IllegalAccessException {
-    if (isSinglegon) {
-      return c.newInstance();
+  /**
+   * Fetch an instance of the behaviour type, either a new one or an already
+   * created instance from the internal instance map.
+   *
+   * @deprecated Experimental - needs to be moved to the aeFXBehaviour project.
+   * @param <T> Any descendant of FXAbstractBehaviour
+   * @param c The behaviour class
+   * @param isSingleton Whether to maintain only one instance or to create
+   * instances for each node that the behaviour is to be applied to.
+   * @return The behaviour instance
+   * @throws InstantiationException ... if the behaviour object cannot be
+   * instaniated. This may happen if it does not have a default constructor.
+   * @throws IllegalAccessException ... if other problems arise when
+   * instantiating the behaviour object.
+   */
+  public <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c, boolean isSingleton) throws InstantiationException, IllegalAccessException {
+    if (isSingleton) {
+      T o = this.instanceMap.get(c);
+      if (o == null) {
+        o = c.newInstance();
+        this.instanceMap.put(c, o);
+      }
+      return o;
 
     } else {
       return c.newInstance();
     }
+  }
+  /**
+   * Default method to get an instance of a behaviour class. 
+   * @param <T> Any descendant of FXAbstractBehaviour
+   * @param c The behaviour class
+   * @return The behaviour instance
+   * @throws InstantiationException ... if the behaviour object cannot be
+   * instaniated. This may happen if it does not have a default constructor.
+   * @throws IllegalAccessException ... if other problems arise when
+   * instantiating the behaviour object.
+   */
+  public <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c) throws InstantiationException, IllegalAccessException {
+    return c.newInstance();
   }
 
   public ObservableList<Task> getCurrentTasks() {
