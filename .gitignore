@@ -4,3 +4,8 @@ aeFXActions/nbproject/private/**/*
 aeFXActionsTest/nbproject/private/**/*
 aeFXActionsTest/dist/web-files/**/*
 mounts.sh
+aeFXActions/dist/README.TXT
+aeFXActions/dist/aeFXActions.jnlp
+aeFXActions/dist/web-files/
+aeFXActionsTest/aeFXActionTest.log
+

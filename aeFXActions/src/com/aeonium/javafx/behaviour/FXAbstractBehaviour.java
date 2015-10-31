@@ -27,7 +27,7 @@ import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
 
 /**
- * Base class for implementing you oen declaratively assignable behaviour
+ * Base class for implementing you own declaratively assignable behaviour
  * classes. Basically, a behaviour class can be seen as a class that consists of
  * a number of event handler methods for handling various events. These handler
  * methods can be assigned or added to any JavaFX node.
@@ -36,7 +36,7 @@ import javafx.scene.input.MouseEvent;
  * Defining a behaviour class feels much like defining the behaviour of a JavaFX
  * node itself: you create event handler methods and assign them to event
  * properties. A FXAbstractBehaviour implementation uses simple POJO fields. If
- * you behaviour class does not need to maintain state, you may use static
+ * your behaviour class does not need to maintain state, you may use static
  * method references, like this:
  * </p>
  * <pre><code>
