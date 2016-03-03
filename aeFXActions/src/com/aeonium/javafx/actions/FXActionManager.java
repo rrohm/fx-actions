@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -163,47 +163,52 @@ public class FXActionManager implements Callback<Class<?>, Object> {
     this.handlerMap.put(FXKeyEventActions.class, new DefaultKeyEventsAnnotationHandler(this));
     this.handlerMap.put(FXBehaviour.class, new DefaultFXBehaviourHandler(this));
 
-    this.currentTasks.addListener(new ListChangeListener<Task>() {
-
-      @Override
-      public void onChanged(ListChangeListener.Change<? extends Task> change) {
-        LOG.log(Level.FINEST, "tasks list changed: {0}", change);
-
-        while (change.next()) {
-          if (change.wasAdded()) {
-            for (final Task task : change.getAddedSubList()) {
-              LOG.log(Level.FINEST, "task added: {0}", task);
-
-              /*
-               * if task done/failed/cancelled: remove listener and remove task from list
-               */
-              final EventHandler eventHandler = new EventHandler() {
-
-                @Override
-                public void handle(Event t) {
-                  LOG.log(Level.FINEST, "removing listener because of: {0}", t.getEventType());
-
-                  if (t.getEventType().equals(WorkerStateEvent.WORKER_STATE_CANCELLED)
-                          || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_FAILED)
-                          || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_SUCCEEDED)) {
-                    task.removeEventHandler(WorkerStateEvent.ANY, this);
-                    currentTasks.remove(task);
-                  }
+    this.currentTasks.addListener((ListChangeListener.Change<? extends Task> change) -> {
+      LOG.log(Level.FINEST, "tasks list changed: {0}", change);
+      
+      while (change.next()) {
+        if (change.wasAdded()) {
+          for (final Task task : change.getAddedSubList()) {
+            LOG.log(Level.FINEST, "task added: {0}", task);
+            
+            /*
+            * if task done/failed/cancelled: remove listener and remove task from list
+            */
+            final EventHandler eventHandler = new EventHandler() {
+              
+              @Override
+              public void handle(Event t) {
+                LOG.log(Level.FINEST, "removing listener because of: {0}", t.getEventType());
+                
+                if (t.getEventType().equals(WorkerStateEvent.WORKER_STATE_CANCELLED)
+                        || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_FAILED)
+                        || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_SUCCEEDED)) {
+                  task.removeEventHandler(WorkerStateEvent.ANY, this);
+                  currentTasks.remove(task);
                 }
-              };
-              task.addEventHandler(WorkerStateEvent.ANY, eventHandler);
-            }
+              }
+            };
+            task.addEventHandler(WorkerStateEvent.ANY, eventHandler);
           }
         }
       }
     });
   }
 
+  /**
+   * This method is a standard callback to produce a controller instance of the
+   * given type, registers it with the action manager an tries to process
+   * framework annotations – <strong>this method is NOT meant ot be invoked by
+   * the application directly.</strong>
+   *
+   * @param controllerClass The controller class to create a new instance from. 
+   * @return The new controller instance.
+   */
   @Override
-  public Object call(Class<?> p) {
+  public Object call(Class<?> controllerClass) {
     Object o = null;
     try {
-      o = p.newInstance();
+      o = controllerClass.newInstance();
 
       // gather instance
       this.addController(o);
@@ -426,8 +431,10 @@ public class FXActionManager implements Callback<Class<?>, Object> {
       return c.newInstance();
     }
   }
+
   /**
-   * Default method to get an instance of a behaviour class. 
+   * Default method to get an instance of a behaviour class.
+   *
    * @param <T> Any descendant of FXAbstractBehaviour
    * @param c The behaviour class
    * @return The behaviour instance

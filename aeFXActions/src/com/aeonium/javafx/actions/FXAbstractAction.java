@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -157,7 +157,6 @@ public abstract class FXAbstractAction extends Service {
 
           } catch (Exception e) {
             LOG.throwing(this.getClass().getName(), "call", e);
-            e.printStackTrace();
           } finally {
             // unnecessary - FXActionManager attaches an according event handler on removal.
 //            manager.currentTasksProperty().remove(this);
@@ -174,13 +173,12 @@ public abstract class FXAbstractAction extends Service {
   }
 
   /**
-   * This is a convenience method where you can place you action logic if you do
-   * not need to update task progress etc.
+   * This is a convenience method where you can place your action logic if you
+   * do not need to update task progress etc.
    *
    * @param event The event that triggered the action.
    */
   protected void onAction(Event event) {
-    System.err.println("FXAbstractAction.onAction -----------------------------");
   }
 
   /**
@@ -217,6 +215,12 @@ public abstract class FXAbstractAction extends Service {
     this.lastEvent = t;
   }
 
+  /**
+   * Set the text property value of this action - the text is uses for the
+   * captions of the controls where this action gets assigned.
+   *
+   * @param value The action text.
+   */
   public void setText(String value) {
     text.set(value);
   }
@@ -230,10 +234,25 @@ public abstract class FXAbstractAction extends Service {
     return text;
   }
 
+  /**
+   * Get the optional tooltip, if provided. Null, if not.
+   *
+   * @return The optional tooltip, if provided. Null, if not.
+   */
   public Tooltip getTooltip() {
     return tooltip.get();
   }
 
+  /**
+   * Set the optional tooltip for the action. Controls using the action will be
+   * bound to this tooltip where applicable.
+   * <p>
+   * <strong>Attention!</strong> Since the tooltip modifies the sceene graph,
+   * this method may have to be invoked on the JavaFX application thread.
+   * </p>
+   *
+   * @param value The tooltip object.
+   */
   public void setTooltip(Tooltip value) {
     tooltip.set(value);
   }

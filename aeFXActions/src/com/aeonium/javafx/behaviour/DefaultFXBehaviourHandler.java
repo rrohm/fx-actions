@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,9 +45,9 @@ public class DefaultFXBehaviourHandler implements AnnotationHandler<FXBehaviour>
    * Bind the behaviour to the node references by the field of the given
    * controller, therefore a new instance of the behaviour class is created.
    *
-   * @param controller
-   * @param field
-   * @param action
+   * @param controller The controller object
+   * @param field The field of the controller
+   * @param action The action/behaviour annotation
    */
   @Override
   public void handle(Object controller, Field field, FXBehaviour action) {

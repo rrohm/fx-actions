@@ -7,8 +7,6 @@
 package com.aeonium.javafx.demoapp;
 
 import com.aeonium.javafx.actions.FXAbstractAction;
-import com.aeonium.javafx.actions.FXAbstractAction;
-import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.scene.control.Tooltip;

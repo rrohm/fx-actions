@@ -7,7 +7,6 @@
 package com.aeonium.javafx.demoapp;
 
 import com.aeonium.javafx.actions.FXAbstractAction;
-import com.aeonium.javafx.actions.FXAbstractAction;
 import javafx.fxml.FXML;
 import javafx.event.Event;
 
