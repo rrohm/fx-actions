@@ -27,6 +27,8 @@ import com.aeonium.javafx.actions.annotations.FXAction;
 import com.aeonium.javafx.behaviour.FXBehaviour;
 import com.aeonium.javafx.actions.annotations.FXKeyEventAction;
 import com.aeonium.javafx.actions.annotations.FXKeyEventActions;
+import com.aeonium.javafx.behaviour.DefaultFXBehavioursHandler;
+import com.aeonium.javafx.behaviour.FXBehaviours;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -162,6 +164,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
     this.handlerMap.put(FXKeyEventAction.class, new DefaultKeyEventAnnotationHandler(this));
     this.handlerMap.put(FXKeyEventActions.class, new DefaultKeyEventsAnnotationHandler(this));
     this.handlerMap.put(FXBehaviour.class, new DefaultFXBehaviourHandler(this));
+    this.handlerMap.put(FXBehaviours.class, new DefaultFXBehavioursHandler(this));
 
     this.currentTasks.addListener((ListChangeListener.Change<? extends Task> change) -> {
       LOG.log(Level.FINEST, "tasks list changed: {0}", change);

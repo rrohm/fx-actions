@@ -27,7 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Default handler for FXKeyEventAction annotations.
+ * Default handler for FXKeyEventActions annotations.
  *
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
  */
@@ -65,39 +65,4 @@ public class DefaultKeyEventsAnnotationHandler implements AnnotationHandler<FXKe
       }
     }
   }
-
-//  private void applyFXActionEvent(Object control, final FXAbstractAction action, FXKeyEventAction annotation) {
-//
-//    if (control instanceof Node) {
-//      Node node = (Node) control;
-//
-//      node.addEventHandler(KeyEvent.KEY_RELEASED, (KeyEvent event) -> {
-//
-////        System.out.printf(
-////                "applyFXActionEvent > EventHandler(KeyEvent.KEY_RELEASED '%s' '%s' \n",
-////                event.getCode().name(),
-////                annotation.keycode());
-//
-//        if (event.getCode().name().equals(annotation.keycode())) {
-//          if (annotation.altDown()) {
-//            if (!event.isAltDown()) {
-//              return;
-//            }
-//          }
-//          if (annotation.ctrlDown()) {
-//            if (!event.isControlDown()) {
-//              return;
-//            }
-//          }
-//          if (annotation.shiftDown()) {
-//            if (!event.isShiftDown()) {
-//              return;
-//            }
-//          }
-//          action.onAction(event);
-//        }
-//      });
-//
-//    }
-//  }
 }

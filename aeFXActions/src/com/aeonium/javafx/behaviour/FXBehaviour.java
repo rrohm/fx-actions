@@ -50,6 +50,17 @@ public @interface FXBehaviour {
    */
   public FXAbstractBehaviour.Mode assignmentMode() default FXAbstractBehaviour.Mode.ASSIGN;
 
+//  /**
+//   * Whether to apply the behaviour on this node as event filter and not as
+//   * event handler (only applicable, if the behaviour is used with assignment
+//   * mode <code>FXAbstractBehaviour.Mode.ASSIGN</code>. Per default, a behaviour
+//   * is always applied as an event handler.
+//   *
+//   * @return Whether to apply the behaviour on this node as event filter and not
+//   * as event handler.
+//   */
+//  public boolean asFilter() default false;
+
   /**
    * Whether to use a shared behaviour instance for all nodes that use this
    * behaviour.
@@ -58,7 +69,7 @@ public @interface FXBehaviour {
    * instances.
    * @deprecated Experimental! Better make the Behaviour implpementation
    * responsible for deciding whether to use a singleton or not. This should
-   * then only server for overriding that default. ... but check whether this
+   * then only serve for overriding that default. ... but check whether this
    * makes sense at all!
    */
   public boolean useSharedInstance() default false;

@@ -35,7 +35,9 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 
 /**
- * Default handler for FXKeyEventAction annotations.
+ * Default handler for FXKeyEventAction annotations, binds the instance of the
+ * declared action class to a KEY_RELEASE event on the given UI control.
+ * Currently, only KEY_RELEASE events can be used for event hooks.
  *
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
  */
@@ -44,19 +46,23 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
   private static final Logger LOG = Logger.getLogger(MultiKeyHandler.class.getName());
 
   /**
-   * 
+   *
    */
   private static final Map<Node, MultiKeyHandler> handlers = new HashMap<>();
 
   private FXActionManager manager;
 
-  public DefaultKeyEventAnnotationHandler() {
-  }
-
   public DefaultKeyEventAnnotationHandler(FXActionManager manager) {
     this.manager = manager;
   }
 
+  /**
+   * Handle a FXKeyEventAction annotation on a field in a controller.
+   *
+   * @param controller
+   * @param field
+   * @param fxAction
+   */
   @Override
   public void handle(Object controller, Field field, FXKeyEventAction fxAction) {
     try {
@@ -70,6 +76,14 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
     }
   }
 
+  /**
+   * Bind the FXAction to a <code>KeyEvent.KEY_RELEASED</code> event on the
+   * given control.
+   *
+   * @param control The UI control node.
+   * @param action The action
+   * @param annotation The annotation that bound the action to the control.
+   */
   public static void applyFXActionEvent(Object control, final FXAbstractAction action, FXKeyEventAction annotation) {
 
     if (control instanceof Node) {
@@ -84,30 +98,6 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
 
       KeyCombination keyCombination = KeyCodeCombination.keyCombination(annotation.keycode());
       handler.register(action, keyCombination);
-//
-//      node.addEventHandler(KeyEvent.KEY_RELEASED, new EventHandler<KeyEvent>() {
-//
-//        public void handle(KeyEvent event) {
-//          if (event.getCode().name().equals(annotation.keycode())) {
-//            if (annotation.altDown()) {
-//              if (!event.isAltDown()) {
-//                return;
-//              }
-//            }
-//            if (annotation.ctrlDown()) {
-//              if (!event.isControlDown()) {
-//                return;
-//              }
-//            }
-//            if (annotation.shiftDown()) {
-//              if (!event.isShiftDown()) {
-//                return;
-//              }
-//            }
-//            action.onAction(event);
-//          }
-//        }
-//      });
 
     }
   }

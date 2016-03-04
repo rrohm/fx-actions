@@ -65,5 +65,4 @@ public class DefaultFXBehaviourHandler implements AnnotationHandler<FXBehaviour>
       Logger.getLogger(DefaultFXBehaviourHandler.class.getName()).log(Level.SEVERE, null, ex);
     }
   }
-
 }
