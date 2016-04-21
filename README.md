@@ -109,8 +109,9 @@ That's it! Soon there will be more information in the wiki pages, e.g. on
 Project History
 ===============
 
+2016-03-06   Added multi-behaviour handeler and docs. Added multi-behaviour handler.
+2016-03-03   Default Image of FXActions is now overridable per annotation attribute.
+2016-10-31   Support for ADD and ASSIGN mode in behaviour.
 2015-05-04   New project description online, minor updates in code and javadocs.
-
 2014-09-16   License decision made, it is  LGPL 2.1.
-
 2014-07-14   The repository has been just created. Code follows!
