@@ -109,7 +109,7 @@ That's it! Soon there will be more information in the wiki pages, e.g. on
 Project History
 ===============
 
-2016-03-06   Added multi-behaviour handeler and docs. Added multi-behaviour handler.
+2016-03-06   Added multi-behaviour handler and docs.
 
 2016-03-03   Default Image of FXActions is now overridable per annotation attribute.
 
