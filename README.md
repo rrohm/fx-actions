@@ -109,6 +109,10 @@ That's it! Soon there will be more information in the wiki pages, e.g. on
 Project History
 ===============
 
+2018-02-18   Project cleanup, is now a plan Java library Project for NetBeans IDE, 
+             but can be build also with Ant from the command line.
+             Added unit tests using Mockito 2.15.4 and aeFXUnit.
+
 2016-03-06   Added multi-behaviour handler and docs.
 
 2016-03-03   Default Image of FXActions is now overridable per annotation attribute.
