@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -93,7 +93,12 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
       if (handler == null) {
         handler = new MultiKeyHandler();
         handlers.put(node, handler);
-        node.addEventHandler(KeyEvent.KEY_RELEASED, handler);
+        
+        switch(annotation.type()) {
+          case KEY_PRESSED: node.addEventHandler(KeyEvent.KEY_PRESSED, handler); break;
+          case KEY_RELEASED: node.addEventHandler(KeyEvent.KEY_RELEASED, handler); break;
+          case KEY_TYPED: node.addEventHandler(KeyEvent.KEY_TYPED, handler); break;
+        }
       }
 
       KeyCombination keyCombination = KeyCodeCombination.keyCombination(annotation.keycode());

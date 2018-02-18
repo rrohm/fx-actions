@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -38,6 +38,16 @@ import java.lang.annotation.Repeatable;
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(FXKeyEventActions.class)
 public @interface FXKeyEventAction {
+  
+  enum EventType {
+    KEY_PRESSED, KEY_TYPED, KEY_RELEASED
+  }
+  
+  /**
+   * The Key event type that an action should get bound to.
+   * @return 
+   */
+  public EventType type() default EventType.KEY_RELEASED;
 
   /**
    * The string name of the key code.

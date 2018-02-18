@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,13 +16,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
+package com.aeonium.javafx.actions;
 
-/*
-    Created on : 04.11.2015, 22:12:05
-    Author     : robert rohm
-*/
+/**
+ * Test input.
+ * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
+ */
+public class TestAction extends FXAbstractAction {
 
-#miAction {
-  -fx-font-weight: bold;
-  -fx-font-size: 16.0px;
+  public TestAction() {
+    // no op
+  }
 }

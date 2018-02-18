@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -55,7 +55,6 @@ import javafx.concurrent.Worker;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.util.Callback;
 
 /**
@@ -219,7 +218,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
       this.processManagerAnnotations(o);
 
     } catch (InstantiationException | IllegalAccessException ex) {
-      ex.printStackTrace();
+      LOG.log(Level.WARNING, "Cannot instantiate {0}", controllerClass);
     }
     return o;
   }
@@ -233,7 +232,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * @param o
    */
   private void processAnnotations(Object o) {
-    LOG.finest("processAnnotations " + o);
+    LOG.log(Level.FINEST, "processAnnotations {0}", o);
 
     Class<?> klasse = o.getClass();
 

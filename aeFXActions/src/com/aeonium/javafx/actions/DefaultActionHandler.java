@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -18,6 +18,8 @@
  */
 package com.aeonium.javafx.actions;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.concurrent.Worker;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -29,12 +31,17 @@ import javafx.event.EventHandler;
  * the annotation.
  *
  * @author Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;
+ * @param <T> Event type
  */
 public class DefaultActionHandler<T extends Event> implements EventHandler<T> {
 
   private final FXAbstractAction action;
 
   private boolean execSyncOnly = false;
+  
+  private static final Logger LOG = Logger.getLogger(DefaultActionHandler.class.getName());
+  
+  
 
   /**
    * Standard constructor, requires only the action instance to get handled. By
@@ -60,25 +67,25 @@ public class DefaultActionHandler<T extends Event> implements EventHandler<T> {
 
   @Override
   public void handle(T t) {
-    System.err.println("DefaultActionHandler.handle " + this.action + " " + this.action.getText());
+    LOG.log(Level.FINEST, "DefaultActionHandler.handle {0} {1}", new Object[]{this.action, this.action.getText()});
     t.consume();
 
     if (action.isRunning() || action.isDisabled()) {
-      System.err.println("DefaultActionHandler.handle  action.isRunning() || action.isDisabled() " + this.action);
+      LOG.log(Level.FINEST, "DefaultActionHandler.handle  action.isRunning() || action.isDisabled() {0}", this.action);
       return;
     }
 
     if (action.doExecuteAsync && !this.execSyncOnly) {
-      System.err.println("DefaultActionHandler.handle  action.doExecuteAsync && !this.execSyncOnly " + this.action);
-      // async exec:
+      LOG.log(Level.FINEST, "DefaultActionHandler.handle  action.doExecuteAsync && !this.execSyncOnly {0}", this.action);
+
       action.setLastEvent(t);
       if (!action.stateProperty().get().equals(Worker.State.READY)) {
-        System.err.println("DefaultActionHandler.handle  !action.stateProperty().get().equals(Worker.State.READY " + this.action);
+        LOG.log(Level.FINEST, "DefaultActionHandler.handle  !action.stateProperty().get().equals(Worker.State.READY {0}", this.action);
         action.reset();
       }
       action.start();
     } else {
-      System.err.println("DefaultActionHandler.handle  else " + this.action);
+      LOG.log(Level.FINEST, "DefaultActionHandler.handle else async {0}", this.action);
       action.onAction(t); // synchronous execution
     }
   }

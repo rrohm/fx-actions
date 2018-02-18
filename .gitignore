@@ -10,4 +10,9 @@ aeFXActions/dist/web-files/
 aeFXActionsTest/aeFXActionTest.log
 aeFXActions/nbproject/UPDATED.TXT
 aeFXActionsTest/nbproject/UPDATED.TXT
-
+aeFXActions/nbproject/jfx-impl_backup*
+aeFXActions/.jacocoverage
+aeFXActions/.scannerwork
+aeFXActions/sonar-project.properties
+aeFXActionsTest/nbproject/jfx-impl_backup*
+aeFXActions/build-with-sonar.sh

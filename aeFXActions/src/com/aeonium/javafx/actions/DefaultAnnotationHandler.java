@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -45,7 +45,8 @@ public class DefaultAnnotationHandler implements AnnotationHandler<FXAction> {
   private static final Logger LOG = Logger.getLogger(DefaultAnnotationHandler.class.getName());
 
   private FXActionManager manager;
-  private final static Map<String, Image> imageMap = new HashMap<>();
+  
+  private final static Map<String, Image> IMAGEMAP = new HashMap<>();
 
   public DefaultAnnotationHandler() {
   }
@@ -90,7 +91,7 @@ public class DefaultAnnotationHandler implements AnnotationHandler<FXAction> {
   }
 
   private Image getImage(String url){
-    Image icon = imageMap.get(url);
+    Image icon = IMAGEMAP.get(url);
     if (icon == null) {
       try {
         icon = new Image(url);
@@ -98,7 +99,7 @@ public class DefaultAnnotationHandler implements AnnotationHandler<FXAction> {
         LOG.log(Level.SEVERE, "Invalid image URL: {0}", url);
         LOG.throwing(this.getClass().getName(), "getImage", e);
       }
-      imageMap.put(url, icon);
+      IMAGEMAP.put(url, icon);
     }
     
     return icon;   

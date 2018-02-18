@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -94,24 +94,7 @@ public abstract class FXAbstractAction extends Service {
    * Create a new instance.
    */
   public FXAbstractAction() {
-    final FXAbstractAction me = this;
-
-    // replaced in FXActionManager - developer decides on annotation level
-    // whether an action is executed sync. or async.
-//    this.onActionProperty.set(new EventHandler<Event>() {
-//
-//      @Override
-//      public void handle(final Event t) {
-//        LOG.log(Level.FINEST, "handle event: {0}", t);
-//
-//        if (!me.isRunning() && !me.disable.get()) {
-//          me.setLastEvent(t);
-//          me.reset();
-//          me.start();
-//          t.consume();
-//        }
-//      }
-//    });
+    // no op
   }
 
   /**

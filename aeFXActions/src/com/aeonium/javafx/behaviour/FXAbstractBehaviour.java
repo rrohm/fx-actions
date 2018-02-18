@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -309,7 +309,10 @@ public class FXAbstractBehaviour {
    * handler.
    */
   private static void addBehaviour(final Node node, final FXAbstractBehaviour behaviour, boolean asFilter) {
-
+    if (node == null) {
+      throw new NullPointerException("You try to apply a FXBehaviour to a null node: " + behaviour);
+    }
+    
     if (behaviour.onDragDone != null) {
       if (asFilter) {
         node.addEventHandler(DragEvent.DRAG_DONE, behaviour.onDragDone);
