@@ -45,13 +45,13 @@ public @interface FXKeyEventAction {
   
   /**
    * The Key event type that an action should get bound to.
-   * @return 
+   * @return The event type.
    */
   public EventType type() default EventType.KEY_RELEASED;
 
   /**
    * The string name of the key code.
-   * @return The event type.
+   * @return The key code.
    */
   public String keycode();
 

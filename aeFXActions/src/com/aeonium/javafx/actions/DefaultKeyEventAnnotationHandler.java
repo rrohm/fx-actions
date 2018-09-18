@@ -50,7 +50,7 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
    */
   private static final Map<Node, MultiKeyHandler> handlers = new HashMap<>();
 
-  private FXActionManager manager;
+  private final FXActionManager manager;
 
   public DefaultKeyEventAnnotationHandler(FXActionManager manager) {
     this.manager = manager;
@@ -59,9 +59,9 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
   /**
    * Handle a FXKeyEventAction annotation on a field in a controller.
    *
-   * @param controller
-   * @param field
-   * @param fxAction
+   * @param controller The controller instance
+   * @param field The field of the controller
+   * @param fxAction The action 
    */
   @Override
   public void handle(Object controller, Field field, FXKeyEventAction fxAction) {

@@ -8,8 +8,8 @@
   </information>
   <resources>
     <j2se version="1.6+" java-vm-args="-Djava.util.logging.config.file=logging.properties "  href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="aeFXActionsTest.jar" size="10270" download="eager" />
-    <jar href="lib/aeFXActions.jar" size="97811" download="eager" />
+    <jar href="aeFXActionsTest.jar" size="10307" download="eager" />
+    <jar href="lib/aeFXActions.jar" size="120100" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="aeFXActionsTest" >
     <param name="requiredFXVersion" value="8.0+"/>
