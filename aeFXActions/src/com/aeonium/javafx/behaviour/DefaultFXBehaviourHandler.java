@@ -19,6 +19,7 @@
 package com.aeonium.javafx.behaviour;
 
 import com.aeonium.javafx.actions.FXActionManager;
+import com.aeonium.javafx.actions.exceptions.NodeTypeRequiredException;
 import com.aeonium.javafx.actions.annotations.AnnotationHandler;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
@@ -59,10 +60,15 @@ public class DefaultFXBehaviourHandler implements AnnotationHandler<FXBehaviour>
       FXAbstractBehaviour behaviour = this.manager.getBehaviour((Class<FXAbstractBehaviour>) Class.forName(name));
 
       Object control = field.get(controller);
+      if (!(control instanceof Node)) {
+        throw new NodeTypeRequiredException(field.getName(), control.getClass());
+      }
       behaviour.bind((Node) control, behaviour.getAssignmentMode());
 
     } catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException | InstantiationException ex) {
-      Logger.getLogger(DefaultFXBehaviourHandler.class.getName()).log(Level.SEVERE, null, ex);
+      Logger.getLogger(DefaultFXBehaviourHandler.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+    } catch (Exception ex) {
+      Logger.getLogger(DefaultFXBehaviourHandler.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
     }
   }
 }

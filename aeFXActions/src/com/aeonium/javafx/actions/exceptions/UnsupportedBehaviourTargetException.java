@@ -16,8 +16,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package com.aeonium.javafx.behaviour;
+package com.aeonium.javafx.actions.exceptions;
 
+import com.aeonium.javafx.behaviour.FXAbstractBehaviour;
 import javafx.scene.Node;
 
 /**
