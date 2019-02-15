@@ -167,21 +167,21 @@ public class FXActionManager implements Callback<Class<?>, Object> {
 
     this.currentTasks.addListener((ListChangeListener.Change<? extends Task> change) -> {
       LOG.log(Level.FINEST, "tasks list changed: {0}", change);
-      
+
       while (change.next()) {
         if (change.wasAdded()) {
           for (final Task task : change.getAddedSubList()) {
             LOG.log(Level.FINEST, "task added: {0}", task);
-            
+
             /*
             * if task done/failed/cancelled: remove listener and remove task from list
-            */
+             */
             final EventHandler eventHandler = new EventHandler() {
-              
+
               @Override
               public void handle(Event t) {
                 LOG.log(Level.FINEST, "removing listener because of: {0}", t.getEventType());
-                
+
                 if (t.getEventType().equals(WorkerStateEvent.WORKER_STATE_CANCELLED)
                         || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_FAILED)
                         || t.getEventType().equals(WorkerStateEvent.WORKER_STATE_SUCCEEDED)) {
@@ -202,9 +202,11 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * given type, registers it with the action manager an tries to process
    * framework annotations – <strong>this method is NOT meant ot be invoked by
    * the application directly.</strong>
+   * <p>
+   * The method returns null if instantiation fails.<p/>
    *
-   * @param controllerClass The controller class to create a new instance from. 
-   * @return The new controller instance.
+   * @param controllerClass The controller class to create a new instance from.
+   * @return The new controller instance or null, if instantiation fails.
    */
   @Override
   public Object call(Class<?> controllerClass) {
@@ -244,8 +246,6 @@ public class FXActionManager implements Callback<Class<?>, Object> {
         continue;
       }
 
-      Object control = null;
-
       field.setAccessible(true);
 
       for (Class annotationClass : this.handlerMap.keySet()) {
@@ -256,20 +256,6 @@ public class FXActionManager implements Callback<Class<?>, Object> {
           this.handlerMap.get(annotationClass).handle(o, field, annotation);
         }
       }
-
-//      if (field.isAnnotationPresent(FXBehaviour.class)) {
-//        FXBehaviour fxBehaviour = field.getAnnotation(FXBehaviour.class);
-//        String name = fxBehaviour.behaviour().getName();
-//
-//        try {
-//          FXAbstractBehaviour behaviour = this.getBehaviour((Class<FXAbstractBehaviour>) Class.forName(name), fxBehaviour.useSharedInstance());
-//
-//          behaviour.bind((Node) control, behaviour.getAssignmentMode());
-//
-//        } catch (InstantiationException | IllegalAccessException | ClassNotFoundException ex) {
-//          Logger.getLogger(FXActionManager.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//      }
     }
   }
 
@@ -312,15 +298,6 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * method repeatedly.
    */
   public synchronized void initActions() {
-//    final Iterator<Object> iterator = myControllers.iterator();
-//    while (iterator.hasNext()) {
-//      Object object = myControllers.iterator().next();
-//      if (!this.myProcessedControllers.contains(object)) {
-//        this.processAnnotations(object);
-//      }
-//      this.myProcessedControllers.add(object);
-//    }
-    // leads to concurrent modification exception!
     try {
       myControllersLock.lock();
       for (Object object : myControllers) {

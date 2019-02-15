@@ -171,13 +171,11 @@ public class DefaultAnnotationHandler implements AnnotationHandler<FXAction> {
 
     buttonBase.setOnAction(new DefaultActionHandler<>(action, !fxAction.doAsync()));
 
-//    System.out.println("initButtonBase: " + action.getClass().getName() + "\t  " + fxAction.imageURL() + "\t " + fxAction.imageURL().isEmpty());
-    
     if (!fxAction.doShowGraphic()) {
       buttonBase.setContentDisplay(ContentDisplay.TEXT_ONLY);
 
     } else {
-      if (!fxAction.imageURL().isEmpty()) {
+      if (fxAction.imageURL() != null && !fxAction.imageURL().isEmpty()) {
         ImageView imageView = new ImageView(getImage(fxAction.imageURL()));
         buttonBase.setGraphic(imageView);
 

@@ -18,6 +18,7 @@
  */
 package com.aeonium.javafx.actions;
 
+import utilities.TestAction;
 import javafx.event.ActionEvent;
 import org.aeonium.fxunit.FXUnit;
 import org.junit.After;

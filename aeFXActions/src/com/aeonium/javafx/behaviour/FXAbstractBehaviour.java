@@ -197,6 +197,10 @@ public class FXAbstractBehaviour {
    * @param node The node that is to be augmented with new behaviour.
    */
   public final void bind(final Node node) {
+    if (node == null) {
+      throw new NullPointerException("You try to apply a FXBehaviour to a null node: " + this.getClass().getName());
+    }
+    
     this.bind(node, this.assignmentMode);
   }
 
@@ -214,6 +218,10 @@ public class FXAbstractBehaviour {
    * @param assignmentMode The assignment mode (ADD|ASSIGN)
    */
   public void bind(final Node node, final Mode assignmentMode) {
+    if (node == null) {
+      throw new NullPointerException("You try to apply a FXBehaviour to a null node: " + this.getClass().getName());
+    }
+    
     switch (assignmentMode) {
       case ADD:
         addBehaviour(node, this);
@@ -309,151 +317,148 @@ public class FXAbstractBehaviour {
    * handler.
    */
   private static void addBehaviour(final Node node, final FXAbstractBehaviour behaviour, boolean asFilter) {
-    if (node == null) {
-      throw new NullPointerException("You try to apply a FXBehaviour to a null node: " + behaviour);
-    }
     
     if (behaviour.onDragDone != null) {
       if (asFilter) {
-        node.addEventHandler(DragEvent.DRAG_DONE, behaviour.onDragDone);
-      } else {
         node.addEventFilter(DragEvent.DRAG_DONE, behaviour.onDragDone);
+      } else {
+        node.addEventHandler(DragEvent.DRAG_DONE, behaviour.onDragDone);
       }
     }
     if (behaviour.onDragDropped != null) {
       if (asFilter) {
-        node.addEventHandler(DragEvent.DRAG_DROPPED, behaviour.onDragDropped);
-      } else {
         node.addEventFilter(DragEvent.DRAG_DROPPED, behaviour.onDragDropped);
+      } else {
+        node.addEventHandler(DragEvent.DRAG_DROPPED, behaviour.onDragDropped);
       }
     }
     if (behaviour.onDragEntered != null) {
       if (asFilter) {
-        node.addEventHandler(DragEvent.DRAG_ENTERED, behaviour.onDragEntered);
-      } else {
         node.addEventFilter(DragEvent.DRAG_ENTERED, behaviour.onDragEntered);
+      } else {
+        node.addEventHandler(DragEvent.DRAG_ENTERED, behaviour.onDragEntered);
       }
     }
     if (behaviour.onDragExited != null) {
       if (asFilter) {
-        node.addEventHandler(DragEvent.DRAG_EXITED, behaviour.onDragExited);
-      } else {
         node.addEventFilter(DragEvent.DRAG_EXITED, behaviour.onDragExited);
+      } else {
+        node.addEventHandler(DragEvent.DRAG_EXITED, behaviour.onDragExited);
       }
     }
     if (behaviour.onDragOver != null) {
       if (asFilter) {
-        node.addEventHandler(DragEvent.DRAG_OVER, behaviour.onDragOver);
-      } else {
         node.addEventFilter(DragEvent.DRAG_OVER, behaviour.onDragOver);
+      } else {
+        node.addEventHandler(DragEvent.DRAG_OVER, behaviour.onDragOver);
       }
     }
 
     if (behaviour.onKeyPressed != null) {
       if (asFilter) {
-        node.addEventHandler(KeyEvent.KEY_PRESSED, behaviour.onKeyPressed);
-      } else {
         node.addEventFilter(KeyEvent.KEY_PRESSED, behaviour.onKeyPressed);
+      } else {
+        node.addEventHandler(KeyEvent.KEY_PRESSED, behaviour.onKeyPressed);
       }
     }
     if (behaviour.onKeyReleased != null) {
       if (asFilter) {
-        node.addEventHandler(KeyEvent.KEY_RELEASED, behaviour.onKeyReleased);
-      } else {
         node.addEventFilter(KeyEvent.KEY_RELEASED, behaviour.onKeyReleased);
+      } else {
+        node.addEventHandler(KeyEvent.KEY_RELEASED, behaviour.onKeyReleased);
       }
     }
     if (behaviour.onKeyTyped != null) {
       if (asFilter) {
-        node.addEventHandler(KeyEvent.KEY_TYPED, behaviour.onKeyTyped);
-      } else {
         node.addEventFilter(KeyEvent.KEY_TYPED, behaviour.onKeyTyped);
+      } else {
+        node.addEventHandler(KeyEvent.KEY_TYPED, behaviour.onKeyTyped);
       }
     }
 
     if (behaviour.onDragDetected != null) {
       if (asFilter) {
-        node.addEventHandler(MouseDragEvent.DRAG_DETECTED, behaviour.onDragDetected);
-      } else {
         node.addEventFilter(MouseDragEvent.DRAG_DETECTED, behaviour.onDragDetected);
+      } else {
+        node.addEventHandler(MouseDragEvent.DRAG_DETECTED, behaviour.onDragDetected);
       }
     }
     if (behaviour.onMouseDragEntered != null) {
       if (asFilter) {
-        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_ENTERED, behaviour.onMouseDragEntered);
-      } else {
         node.addEventFilter(MouseDragEvent.MOUSE_DRAG_ENTERED, behaviour.onMouseDragEntered);
+      } else {
+        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_ENTERED, behaviour.onMouseDragEntered);
       }
     }
     if (behaviour.onMouseDragExited != null) {
       if (asFilter) {
-        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_EXITED, behaviour.onMouseDragExited);
-      } else {
         node.addEventFilter(MouseDragEvent.MOUSE_DRAG_EXITED, behaviour.onMouseDragExited);
+      } else {
+        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_EXITED, behaviour.onMouseDragExited);
       }
     }
     if (behaviour.onMouseDragOver != null) {
       if (asFilter) {
-        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_OVER, behaviour.onMouseDragOver);
-      } else {
         node.addEventFilter(MouseDragEvent.MOUSE_DRAG_OVER, behaviour.onMouseDragOver);
+      } else {
+        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_OVER, behaviour.onMouseDragOver);
       }
     }
     if (behaviour.onMouseDragReleased != null) {
       if (asFilter) {
-        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_RELEASED, behaviour.onMouseDragReleased);
-      } else {
         node.addEventFilter(MouseDragEvent.MOUSE_DRAG_RELEASED, behaviour.onMouseDragReleased);
+      } else {
+        node.addEventHandler(MouseDragEvent.MOUSE_DRAG_RELEASED, behaviour.onMouseDragReleased);
       }
     }
 
     if (behaviour.onMouseClicked != null) {
       if (asFilter) {
-        node.addEventHandler(MouseEvent.MOUSE_CLICKED, behaviour.onMouseClicked);
-      } else {
         node.addEventFilter(MouseEvent.MOUSE_CLICKED, behaviour.onMouseClicked);
+      } else {
+        node.addEventHandler(MouseEvent.MOUSE_CLICKED, behaviour.onMouseClicked);
       }
     }
     if (behaviour.onMouseDragged != null) {
       if (asFilter) {
-        node.addEventHandler(MouseEvent.MOUSE_DRAGGED, behaviour.onMouseDragged);
-      } else {
         node.addEventFilter(MouseEvent.MOUSE_DRAGGED, behaviour.onMouseDragged);
+      } else {
+        node.addEventHandler(MouseEvent.MOUSE_DRAGGED, behaviour.onMouseDragged);
       }
     }
     if (behaviour.onMouseEntered != null) {
       if (asFilter) {
-        node.addEventHandler(MouseEvent.MOUSE_ENTERED, behaviour.onMouseEntered);
-      } else {
         node.addEventFilter(MouseEvent.MOUSE_ENTERED, behaviour.onMouseEntered);
+      } else {
+        node.addEventHandler(MouseEvent.MOUSE_ENTERED, behaviour.onMouseEntered);
       }
     }
     if (behaviour.onMouseExited != null) {
       if (asFilter) {
-        node.addEventHandler(MouseEvent.MOUSE_EXITED, behaviour.onMouseExited);
-      } else {
         node.addEventFilter(MouseEvent.MOUSE_EXITED, behaviour.onMouseExited);
+      } else {
+        node.addEventHandler(MouseEvent.MOUSE_EXITED, behaviour.onMouseExited);
       }
     }
     if (behaviour.onMouseMoved != null) {
       if (asFilter) {
-        node.addEventHandler(MouseEvent.MOUSE_MOVED, behaviour.onMouseMoved);
-      } else {
         node.addEventFilter(MouseEvent.MOUSE_MOVED, behaviour.onMouseMoved);
+      } else {
+        node.addEventHandler(MouseEvent.MOUSE_MOVED, behaviour.onMouseMoved);
       }
     }
     if (behaviour.onMousePressed != null) {
       if (asFilter) {
-        node.addEventHandler(MouseEvent.MOUSE_PRESSED, behaviour.onMousePressed);
-      } else {
         node.addEventFilter(MouseEvent.MOUSE_PRESSED, behaviour.onMousePressed);
+      } else {
+        node.addEventHandler(MouseEvent.MOUSE_PRESSED, behaviour.onMousePressed);
       }
     }
     if (behaviour.onMouseReleased != null) {
       if (asFilter) {
-        node.addEventHandler(MouseEvent.MOUSE_RELEASED, behaviour.onMouseReleased);
-      } else {
         node.addEventFilter(MouseEvent.MOUSE_RELEASED, behaviour.onMouseReleased);
+      } else {
+        node.addEventHandler(MouseEvent.MOUSE_RELEASED, behaviour.onMouseReleased);
       }
     }
   }

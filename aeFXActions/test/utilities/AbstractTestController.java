@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2019 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,15 +16,31 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
-package com.aeonium.javafx.actions;
+package utilities;
+
+import com.aeonium.javafx.actions.FXActionManager;
+import com.aeonium.javafx.actions.annotations.FXAManager;
+import com.aeonium.javafx.actions.annotations.FXAction;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 
 /**
- * Test input.
+ * Test controller class, for testing behaviour with abstract controller
+ * classes, i.e., classes that throw exceptions when beeing instantiated.
+ *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
-public class TestAction extends FXAbstractAction {
+public abstract class AbstractTestController {
 
-  public TestAction() {
-    // no op
+  @FXML
+  @FXAction(action = DummyAction.class)
+  private Button button1;
+
+  @FXAManager
+  private FXActionManager actionManager;
+
+  public FXActionManager getActionManager() {
+    return actionManager;
   }
+
 }
