@@ -109,6 +109,9 @@ That's it! Soon there will be more information in the wiki pages, e.g. on
 Project History
 ===============
 
+2019-03-21   The project gets upgraded to JDK11 and JavaFX 11.
+             Created the javafx8-branch for the old sources. 
+
 2018-02-18   Project cleanup, is now a plan Java library Project for NetBeans IDE, 
              but can be build also with Ant from the command line.
              Added unit tests using Mockito 2.15.4 and aeFXUnit.
