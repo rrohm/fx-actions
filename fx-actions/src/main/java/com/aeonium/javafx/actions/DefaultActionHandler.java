@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,7 +67,7 @@ public class DefaultActionHandler<T extends Event> implements EventHandler<T> {
 
   @Override
   public void handle(T t) {
-    LOG.log(Level.FINEST, "DefaultActionHandler.handle {0} {1}", new Object[]{this.action, this.action.getText()});
+    LOG.log(Level.INFO, "DefaultActionHandler.handle {0} {1}", new Object[]{this.action, this.action.getText()});
     t.consume();
 
     if (action.isRunning() || action.isDisabled()) {

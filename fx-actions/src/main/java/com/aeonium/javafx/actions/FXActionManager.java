@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -157,6 +157,9 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    */
   private final Lock myControllersLock = new ReentrantLock();
 
+  /**
+   * Create a new instance – this is the default way to use the FXActionManager.
+   */
   public FXActionManager() {
     this.handlerMap = new HashMap<>();
     this.handlerMap.put(FXAction.class, new DefaultAnnotationHandler(this));
@@ -198,6 +201,20 @@ public class FXActionManager implements Callback<Class<?>, Object> {
   }
 
   /**
+   * Create a new instance, extended with additional handlers for custom
+   * annotations. Use this constructor, if you use custom annotations and
+   * handlers.
+   *
+   * @param additionalHandlers A map of classes and responsive annotation
+   * handlers. Class is an annotation type. AnnotationHandler needs to be a
+   * handler exactly for this type of annotation.
+   */
+  public FXActionManager(Map<Class, AnnotationHandler> additionalHandlers) {
+    this();
+    this.handlerMap.putAll(additionalHandlers);
+  }
+
+  /**
    * This method is a standard callback to produce a controller instance of the
    * given type, registers it with the action manager an tries to process
    * framework annotations – <strong>this method is NOT meant ot be invoked by
@@ -231,12 +248,12 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * (injection etc.) is delegated to the annotation handlers mapped to the
    * annotation types.
    *
-   * @param o
+   * @param controller
    */
-  private void processAnnotations(Object o) {
-    LOG.log(Level.FINEST, "processAnnotations {0}", o);
+  private void processAnnotations(Object controller) {
+    LOG.log(Level.FINEST, "processAnnotations {0}", controller);
 
-    Class<?> klasse = o.getClass();
+    Class<?> klasse = controller.getClass();
 
     Field[] fields = klasse.getDeclaredFields();
 
@@ -253,7 +270,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
 
           Annotation annotation = field.getAnnotation(annotationClass);
 
-          this.handlerMap.get(annotationClass).handle(o, field, annotation);
+          this.handlerMap.get(annotationClass).handle(controller, field, annotation);
         }
       }
     }
@@ -361,7 +378,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
         Class<?>[] argtypes = {};
         Method methodGetInstance = null;
         try {
-          methodGetInstance =  enclosingClass.getMethod("getInstance", argtypes);
+          methodGetInstance = enclosingClass.getMethod("getInstance", argtypes);
         } catch (NoSuchMethodException | SecurityException ex) {
           Logger.getLogger(FXActionManager.class.getName()).log(Level.WARNING, "No getInstance() method in " + enclosingClass.getName(), ex);
         }
@@ -378,13 +395,34 @@ public class FXActionManager implements Callback<Class<?>, Object> {
         }
 
       } else {
-        o = c.newInstance();
+        o = c.getDeclaredConstructor().newInstance();
       }
 
       o.setManager(this);
       this.instanceMap.put(c, o);
     }
     return o;
+  }
+
+  public <T extends FXAbstractAction> T getAction(Class<T> actionClass, final Object enclosingInstance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    T action = this.instanceMap.get(actionClass);
+    if (action == null) {
+
+      // Action has an enclosing class, i.e. is an inner class?
+      Class<?> enclosingClass = actionClass.getEnclosingClass();
+
+      if (enclosingClass != null) {
+        Constructor<T> declaredConstructor = actionClass.getDeclaredConstructor(enclosingClass);
+        action = declaredConstructor.newInstance(enclosingInstance);
+
+      } else {
+        action = actionClass.newInstance();
+      }
+
+      action.setManager(this);
+      this.instanceMap.put(actionClass, action);
+    }
+    return action;
   }
 
   /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -65,6 +65,7 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
    */
   @Override
   public void handle(Object controller, Field field, FXKeyEventAction fxAction) {
+    LOG.log(Level.INFO, "handle{0} {1} {2}", new Object[]{field.getName(), fxAction.keycode(), fxAction.action().getName()});
     try {
       String name = fxAction.action().getName();
       final FXAbstractAction action = (FXAbstractAction) this.manager.getAction((Class<FXAbstractAction>) Class.forName(name));
@@ -85,7 +86,8 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
    * @param annotation The annotation that bound the action to the control.
    */
   public static void applyFXActionEvent(Object control, final FXAbstractAction action, FXKeyEventAction annotation) {
-
+    LOG.log(Level.INFO, "{0} {1} {2}", new Object[]{action.getTitle(), annotation.keycode(), annotation.action().getName()});
+    
     if (control instanceof Node) {
       Node node = (Node) control;
 
@@ -104,6 +106,8 @@ public class DefaultKeyEventAnnotationHandler implements AnnotationHandler<FXKey
       KeyCombination keyCombination = KeyCodeCombination.keyCombination(annotation.keycode());
       handler.register(action, keyCombination);
 
+    } else {
+      LOG.log(Level.WARNING, "Trying to apply to a non-Node type, ignored: {0}", control.toString());
     }
   }
 

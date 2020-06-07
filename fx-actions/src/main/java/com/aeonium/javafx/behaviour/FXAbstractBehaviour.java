@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -59,7 +59,7 @@ import javafx.scene.input.MouseEvent;
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
-public class FXAbstractBehaviour {
+public abstract class FXAbstractBehaviour {
 
   protected Mode assignmentMode = ADD;
 

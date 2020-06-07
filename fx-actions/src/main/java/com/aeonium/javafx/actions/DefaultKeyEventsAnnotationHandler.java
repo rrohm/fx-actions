@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2018 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -50,13 +50,20 @@ public class DefaultKeyEventsAnnotationHandler implements AnnotationHandler<FXKe
 
   @Override
   public void handle(Object controller, Field field, FXKeyEventActions annotation) {
-    LOG.log(Level.FINEST, "DefaultKeyEventsAnnotationHandler.handle {0}", annotation);
+    LOG.log(Level.INFO, "handle {0}", annotation.value().length);
     
     FXKeyEventAction[] keyeventActions = annotation.value();
     for (FXKeyEventAction keyeventAction : keyeventActions) {
       try {
         String name = keyeventAction.action().getName();
-        final FXAbstractAction action = (FXAbstractAction) this.manager.getAction((Class<FXAbstractAction>) Class.forName(name));
+        final Class<FXAbstractAction> fxActionClass = (Class<FXAbstractAction>) Class.forName(name);
+        
+        final FXAbstractAction action;
+        if (fxActionClass.getDeclaringClass() != null) {
+          action = (FXAbstractAction) this.manager.getAction(fxActionClass, controller);
+        } else {
+          action = (FXAbstractAction) this.manager.getAction(fxActionClass);
+        }
 
         DefaultKeyEventAnnotationHandler.applyFXActionEvent(field.get(controller), action, keyeventAction);
 
