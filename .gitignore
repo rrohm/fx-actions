@@ -3,3 +3,4 @@ fx-actions/.scannerwork
 fx-actions/sonar-project.properties
 fx-actions/build-with-sonar.sh
 fx-actions/target
+.svn
