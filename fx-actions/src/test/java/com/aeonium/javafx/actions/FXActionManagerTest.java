@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2019 Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2021 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,12 +35,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Ignore;
 import utilities.AbstractTestController;
 import utilities.TestBehaviour;
 import utilities.TestController;
 import utilities.TestControllerNoInstanceWithAction.InnerAction2;
-import utilities.TestControllerWithAction;
 import utilities.TestControllerWithAction.InnerAction;
 
 /**
@@ -147,6 +145,7 @@ public class FXActionManagerTest {
 
   /**
    * Test of getBehaviour method, of class FXActionManager.
+   * @throws java.lang.Exception Any.
    */
   @Test
   public void testGetBehaviour_Class_boolean_true() throws Exception {

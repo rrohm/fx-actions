@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2021 Robert Rohm  &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,6 +21,7 @@ package com.aeonium.javafx.behaviour;
 import com.aeonium.javafx.actions.FXActionManager;
 import com.aeonium.javafx.actions.annotations.AnnotationHandler;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;
@@ -64,7 +65,7 @@ public class DefaultFXBehavioursHandler implements AnnotationHandler<FXBehaviour
         Object control = field.get(controller);
         behaviour.bind((Node) control, behaviour.getAssignmentMode());
       }
-    } catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException | InstantiationException ex) {
+    } catch (ClassNotFoundException | IllegalArgumentException | IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
       Logger.getLogger(DefaultFXBehavioursHandler.class.getName()).log(Level.SEVERE, null, ex);
     }
   }

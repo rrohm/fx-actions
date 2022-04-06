@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2021 Robert Rohm  &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -229,14 +229,14 @@ public class FXActionManager implements Callback<Class<?>, Object> {
   public Object call(Class<?> controllerClass) {
     Object o = null;
     try {
-      o = controllerClass.newInstance();
+      o = controllerClass.getDeclaredConstructor().newInstance();
 
       // gather instance
       this.addController(o);
       // inject actions manager if needed
       this.processManagerAnnotations(o);
 
-    } catch (InstantiationException | IllegalAccessException ex) {
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException ex) {
       LOG.log(Level.WARNING, "Cannot instantiate {0}", controllerClass);
     }
     return o;
@@ -277,7 +277,8 @@ public class FXActionManager implements Callback<Class<?>, Object> {
   }
 
   /**
-   * Inject instances of this manager.
+   * Inject instances of this manager into fields with {@link FXAManager}
+   * annotation.
    *
    * @param o
    */
@@ -389,8 +390,9 @@ public class FXActionManager implements Callback<Class<?>, Object> {
           o = declaredConstructor.newInstance(enclosingInstance);
 
         } else {
-          Object enclosingInstance = enclosingClass.newInstance();
+          Object enclosingInstance = enclosingClass.getDeclaredConstructor().newInstance();
           Constructor<T> declaredConstructor = c.getDeclaredConstructor(enclosingClass);
+          // TODO Take care of that case when enclosingInstance is not of enclosingClass
           o = declaredConstructor.newInstance(enclosingInstance);
         }
 
@@ -404,7 +406,38 @@ public class FXActionManager implements Callback<Class<?>, Object> {
     return o;
   }
 
-  public <T extends FXAbstractAction> T getAction(Class<T> actionClass, final Object enclosingInstance) throws ClassNotFoundException, InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+  /**
+   * Factory method for action instances. An action is first looked for in the
+   * instances map. If it is not found, it gets created and registered in the
+   * map. Hence, this method manages always a single instance of every action.
+   *
+   * <p>
+   * This method also works with nested classes. If the enclosing instance is
+   * not of the type of the enclosing class, an instance of the enclosing class
+   * is looked up in the controllers list, i.e., the action should be nested in
+   * the current controller or at least one of the known controllers. In
+   * practice, this limitation makes sense, because you should have a clear
+   * reason to nest action classes inside other classes. One reason would be
+   * accessing fields within the enclosing controller.
+   * <p>
+   *
+   *
+   * @param <T> The type of the action class.
+   * @param actionClass The action class
+   * @param enclosingInstance The enclosing instance of the action class.
+   * @return The action class instance.
+   * @throws InstantiationException Thrown when the action cannot be
+   * instantiated or if no enclosing instance exists for instantiation.
+   * @throws IllegalAccessException Thrown when the constructor of the action
+   * cannot be accessed.
+   * @throws NoSuchMethodException Thrown when no no-arg constructor is found in
+   * the action class.
+   * @throws IllegalArgumentException Thrown when instantiation of the action
+   * fails.
+   * @throws InvocationTargetException Thrown when instantiation of the action
+   * fails.
+   */
+  public <T extends FXAbstractAction> T getAction(Class<T> actionClass, final Object enclosingInstance) throws InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
     T action = this.instanceMap.get(actionClass);
     if (action == null) {
 
@@ -413,10 +446,24 @@ public class FXActionManager implements Callback<Class<?>, Object> {
 
       if (enclosingClass != null) {
         Constructor<T> declaredConstructor = actionClass.getDeclaredConstructor(enclosingClass);
-        action = declaredConstructor.newInstance(enclosingInstance);
+        if (enclosingClass.isInstance(enclosingInstance)) {
+          action = declaredConstructor.newInstance(enclosingInstance);
+        } else {
+          boolean found = false;
+          for (Object myController : myControllers) {
+            if (enclosingClass.isInstance(myController)) {
+              action = declaredConstructor.newInstance(myController);
+              found = true;
+              break;
+            }
+          }
+          if (!found) {
+            throw new InstantiationException("No instance of enclosing controller class found for " + actionClass.getName());
+          }
+        }
 
       } else {
-        action = actionClass.newInstance();
+        action = actionClass.getDeclaredConstructor().newInstance();
       }
 
       action.setManager(this);
@@ -464,9 +511,12 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * instaniated. This may happen if it does not have a default constructor.
    * @throws IllegalAccessException ... if other problems arise when
    * instantiating the behaviour object.
+   * @throws java.lang.NoSuchMethodException ... if no default constructor is
+   * found in the Behaviour class.
+   * @throws java.lang.reflect.InvocationTargetException
    */
-  public <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c) throws InstantiationException, IllegalAccessException {
-    return c.newInstance();
+  public <T extends FXAbstractBehaviour> T getBehaviour(Class<T> c) throws InstantiationException, IllegalAccessException, NoSuchMethodException, IllegalArgumentException, InvocationTargetException {
+    return c.getDeclaredConstructor().newInstance();
   }
 
   public ObservableList<Task> getCurrentTasks() {

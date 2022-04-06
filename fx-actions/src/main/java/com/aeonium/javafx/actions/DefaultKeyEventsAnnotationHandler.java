@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2021 Robert Rohm  &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -37,11 +37,8 @@ public class DefaultKeyEventsAnnotationHandler implements AnnotationHandler<FXKe
 
   private FXActionManager manager;
 
-  {
-    // 
-  }
-
   public DefaultKeyEventsAnnotationHandler() {
+    // no op
   }
 
   public DefaultKeyEventsAnnotationHandler(FXActionManager manager) {
