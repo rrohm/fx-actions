@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2021 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,16 +20,17 @@ package com.aeonium.javafx.actions.progress;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -40,19 +41,19 @@ public class SimpleProgressTextAdapterTest {
   public SimpleProgressTextAdapterTest() {
   }
 
-  @BeforeAll
+  @BeforeClass
   public static void setUpClass() {
   }
 
-  @AfterAll
+  @AfterClass
   public static void tearDownClass() {
   }
 
-  @BeforeEach
+  @Before
   public void setUp() {
   }
 
-  @AfterEach
+  @After
   public void tearDown() {
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2021 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,11 +25,11 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.aeonium.fxunit.FXUnit;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import utilities.DummyKeyAction;
 import utilities.DummyKeySyncAction;
 import utilities.TestKeyEventController;
@@ -44,20 +44,20 @@ public class DefaultKeyEventAnnotationHandlerTest {
   public DefaultKeyEventAnnotationHandlerTest() {
   }
   
-  @BeforeAll
+  @BeforeClass
   public static void setUpClass() {
     FXUnit.init();
   }
   
-  @AfterAll
+  @AfterClass
   public static void tearDownClass() {
   }
   
-  @BeforeEach
+  @Before
   public void setUp() {
   }
   
-  @AfterEach
+  @After
   public void tearDown() {
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2024 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2021 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,13 +21,12 @@ package com.aeonium.javafx.actions;
 import com.aeonium.javafx.actions.annotations.FXAManager;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 import utilities.TestController;
 
 /**
@@ -40,19 +39,19 @@ public class DefaultFXManagerAnnotationHandlerTest {
   public DefaultFXManagerAnnotationHandlerTest() {
   }
 
-  @BeforeAll
+  @BeforeClass
   public static void setUpClass() {
   }
 
-  @AfterAll
+  @AfterClass
   public static void tearDownClass() {
   }
 
-  @BeforeEach
+  @Before
   public void setUp() {
   }
 
-  @AfterEach
+  @After
   public void tearDown() {
   }
 
