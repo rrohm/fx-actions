@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2024 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,45 +21,45 @@ package com.aeonium.javafx.actions;
 import utilities.TestAction;
 import javafx.event.ActionEvent;
 import org.aeonium.fxunit.FXUnit;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Test cases for {@link DefaultActionHandler}.
  *
  * @author Robert Rohm&lt;r.rohm@aeonium-systems.de&gt;
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class DefaultActionHandlerTest {
 
   @Mock
   private FXActionManager actionManager;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     FXUnit.init();
   }
 
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
   }
 
-  @Before
+  @BeforeEach
   public void setUp() {
     this.actionManager = new FXActionManager();
   }
 
-  @After
+  @AfterEach
   public void tearDown() {
   }
 
@@ -135,7 +135,7 @@ public class DefaultActionHandlerTest {
 
     instance.handle(event);
 
-    assertTrue("Event is consumed", event.isConsumed());
+    assertTrue(event.isConsumed(), "Event is consumed");
   }
 
 }
