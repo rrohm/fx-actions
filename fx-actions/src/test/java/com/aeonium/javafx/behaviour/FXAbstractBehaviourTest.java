@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2024 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -25,12 +25,15 @@ import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.aeonium.fxunit.FXUnit;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import utilities.TestBehaviour;
 import utilities.TestEmptyBehaviour;
 
@@ -43,34 +46,33 @@ public class FXAbstractBehaviourTest {
   public FXAbstractBehaviourTest() {
   }
   
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     FXUnit.init();
   }
   
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
   }
   
-  @Before
+  @BeforeEach
   public void setUp() {
   }
   
-  @After
+  @AfterEach
   public void tearDown() {
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testBind_Node_NPE() {
     System.out.println("bind NPE");
     Node node = null;
     TestBehaviour instance = new TestBehaviour();
     instance.setAssignmentMode(FXAbstractBehaviour.Mode.ASSIGN);
-    instance.bind(node);
     
-    assertEquals(instance.getOnKeyPressed(), node.getOnKeyPressed());
-    assertEquals(instance.getOnKeyReleased(), node.getOnKeyReleased());
-    assertEquals(instance.getOnKeyTyped(), node.getOnKeyTyped());
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      instance.bind(node);
+    });
   }
   /**
    * Test of bind method, of class FXAbstractBehaviour.
@@ -107,18 +109,16 @@ public class FXAbstractBehaviourTest {
     assertEquals(instance.getOnMouseReleased(), node.getOnMouseReleased());
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void testBind_Node_FXAbstractBehaviourMode_NPE() {
     System.out.println("bind NPE");
     Node node = null;
     FXAbstractBehaviour.Mode assignmentMode = FXAbstractBehaviour.Mode.ASSIGN;
     TestBehaviour instance = new TestBehaviour();
-    instance.bind(node, assignmentMode);
     
-    assertEquals(instance.getOnKeyPressed(), node.getOnKeyPressed());
-    assertEquals(instance.getOnKeyReleased(), node.getOnKeyReleased());
-    assertEquals(instance.getOnKeyTyped(), node.getOnKeyTyped());
-    
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      instance.bind(node, assignmentMode);
+    });
   }
   
   /**

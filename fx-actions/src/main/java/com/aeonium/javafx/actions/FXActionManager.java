@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Robert Rohm  &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2024 Robert Rohm  &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -209,7 +209,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * handlers. Class is an annotation type. AnnotationHandler needs to be a
    * handler exactly for this type of annotation.
    */
-  public FXActionManager(Map<Class, AnnotationHandler> additionalHandlers) {
+  public FXActionManager(Map<Class<?>, AnnotationHandler<?>> additionalHandlers) {
     this();
     this.handlerMap.putAll(additionalHandlers);
   }
@@ -220,7 +220,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * framework annotations – <strong>this method is NOT meant ot be invoked by
    * the application directly.</strong>
    * <p>
-   * The method returns null if instantiation fails.<p/>
+   * The method returns null if instantiation fails.</p>
    *
    * @param controllerClass The controller class to create a new instance from.
    * @return The new controller instance or null, if instantiation fails.
@@ -419,7 +419,7 @@ public class FXActionManager implements Callback<Class<?>, Object> {
    * practice, this limitation makes sense, because you should have a clear
    * reason to nest action classes inside other classes. One reason would be
    * accessing fields within the enclosing controller.
-   * <p>
+   * </p>
    *
    *
    * @param <T> The type of the action class.

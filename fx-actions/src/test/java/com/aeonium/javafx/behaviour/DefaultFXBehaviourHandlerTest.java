@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
+ * Copyright (C) 2024 Robert Rohm &lt;r.rohm@aeonium-systems.de&gt;.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,12 +23,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import javafx.scene.control.Button;
 import org.aeonium.fxunit.FXUnit;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import utilities.TestBehaviour;
 import utilities.TestControllerWithBehaviour;
 
@@ -41,20 +41,20 @@ public class DefaultFXBehaviourHandlerTest {
   public DefaultFXBehaviourHandlerTest() {
   }
   
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() {
     FXUnit.init();
   }
   
-  @AfterClass
+  @AfterAll
   public static void tearDownClass() {
   }
   
-  @Before
+  @BeforeEach
   public void setUp() {
   }
   
-  @After
+  @AfterEach 
   public void tearDown() {
   }
 
